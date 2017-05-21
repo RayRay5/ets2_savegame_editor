@@ -1,9 +1,9 @@
 # README ets2_savegame_editor
-# .NET Framework (C#) Version 4.5.2 is Project Default, lower versions may work, without warranty
-# No other special files or libaries are required
-# Compiled binary file is currently x64 Windows only
-# For x86 Windows or other OS like Linux or MacOSX (x86/x64) compile the program yourself
-# Eventually you have to change the Project path in the solutions explorer
+.NET Framework (C#) Version 4.5.2 is Project Default, lower versions may work, without warranty
+No other special files or libaries are required
+Compiled binary file is currently x64 Windows only
+For x86 Windows or other OS like Linux or MacOSX (x86/x64) compile the program yourself
+Eventually you have to change the Project path in the solutions explorer
 
 Click "Open File" to load the ETS2 savegame file
 Before you open it, don't forget to decrypt it with the savegame decrypter
