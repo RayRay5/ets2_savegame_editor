@@ -24,6 +24,17 @@ If you don't want to create a backup, just leave the textfield empty
 
 Analyze will analyze the savegame data. You can skip this if you are an expert and enter the values to wish directly. However you will be able to modify your garages only if you analyzed your savegame.
 
+In the garage explorer you will see all garages and some other stuff, ignore that, changing that will mess around with your savegame.
+Click "upgrade garage" or "downgrade garage" to increase or decrease the level of your garage
+
+Level 0 (color: dark red): You don't own this garage
+
+Level 1 (color: red): Tiny garage
+
+Level 2 (color: orange): Small garage
+
+Level 3 (color: (olive-)green): Big garage
+
 
 Click "Apply Settings" to apply all changes. Select "don't change" if you don't wish the value to be changed
 
