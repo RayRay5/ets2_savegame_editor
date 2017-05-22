@@ -1,4 +1,12 @@
-﻿using System;
+﻿/**
+* Euro Truck Simulator 2 Savegame Editor
+* author: https://github.com/RayRay5
+* licensed under GNU GENERAL PUBLIC LICENSE v3.0
+*
+* style is, if possible, functional
+*/
+
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +41,11 @@ namespace WindowsFormsApplication1
 
         }
 
+        /**
+        * validate if file is a .sii file and if the file is a valid file or not
+        * author: https://github.com/RayRay5
+        * TODO check if file is decrypted or not
+        */
         private bool isInvalidFile()
         {
             if (!textBox1.Text.Contains(".sii"))
@@ -43,6 +56,10 @@ namespace WindowsFormsApplication1
             return false;
         }
 
+        /**
+        * Creates a backup file, using copy function to avoid overwriting
+        * author: https://github.com/RayRay5
+        */
         private void saveOldFile(string filename_original, string filename_backup)
         {
             //string oldfilename = "game_old.sii";
@@ -63,6 +80,10 @@ namespace WindowsFormsApplication1
             }
         }
 
+        /**
+        * helper function to change the color of the treenodes accordingly to the value
+        * author: https://github.com/RayRay5
+        */
         private void changeForeColor(TreeNode n, int index)
         {
             switch (garageSize[index].ToString())
@@ -85,7 +106,10 @@ namespace WindowsFormsApplication1
             }
         }
 
-        //OpenFile
+        /**
+        * Open the OpenFileDialog
+        * author: https://github.com/RayRay5
+        */
         private void button1_Click(object sender, EventArgs e)
         {
             ofd.Filter = "ETS2 Savegames|*.sii";
@@ -97,7 +121,10 @@ namespace WindowsFormsApplication1
             }
         }
 
-        //Apply settings
+        /**
+        * Applies the settings made. (writes all stuff back to file in the hopefully correct format)
+        * author: https://github.com/RayRay5
+        */
         private void button2_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -112,6 +139,9 @@ namespace WindowsFormsApplication1
             string filename = ofd.FileName;
             string[] lines = File.ReadAllLines(filename);
 
+            /*
+            * write back bank account money
+            */
             for (int i = 0; i < lines.Length; ++i)
             {
                 if (textBox2.Text != "")
@@ -124,7 +154,10 @@ namespace WindowsFormsApplication1
                 }
             }
 
-            for(int i = 0; i < lines.Length; ++i)
+            /*
+            * write back garage data
+            */
+            for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].Contains("garage") && !lines[i].Contains("garages") && (!(lines[i+1].Contains("}")) || !(lines[i+1].Contains("garage"))))
                 {
@@ -134,21 +167,6 @@ namespace WindowsFormsApplication1
                     if(ort.Length < 15)
                     {
                         int ind = garages.IndexOf(ort);
-                        //int currGarageSize = 2 * Int32.Parse(garageSize[ind].ToString()) + 1;
-                        //string ll = lines[679];
-                        //string lls = lines[i].ToString();
-                        //string regexedLine = Regex.Replace(lines[i].ToString(), "[^0-9]", "").ToString();
-
-                        /*if(regexedLine != "")
-                        {
-                            if (Int32.Parse(regexedLine) < currGarageSize)
-                            {
-                                MessageBox.Show(lines[i+1]);
-                                lines[i+1] = "";
-                            }
-                            MessageBox.Show(regexedLine);
-                        }*/
-
                         do
                         {
                             i++;
@@ -173,15 +191,12 @@ namespace WindowsFormsApplication1
             {
                 if (lines[i].Contains("experience_points"))
                 {
-
-                    //int exp = Int32.Parse(lines[i]);
                     if(textBox3.Text != "")
                     {
                         lines[i] = " experience_points: " + textBox3.Text;
                     }
                     
                     i++;
-                    //int adr = Int32.Parse(lines[i]);
                     if (comboBox1.Text != "" && comboBox1.Text != "don't change")
                     {
                         lines[i] = " adr: " + comboBox1.Text;
@@ -226,15 +241,21 @@ namespace WindowsFormsApplication1
             Cursor.Current = Cursors.Default;
         }
 
-        private string rr(string line)
+        /**
+        * Helper Function to replace non-numeric chars in a string
+        * author: https://github.com/RayRay5
+        */
+        private string regexReplaceNonNumericChars(string line)
         {
             return Regex.Replace(line, "[^0-9.]", "");
         }
 
-        //Analyze
-        private void button3_Click(object sender, EventArgs e)
+        /**
+        * Analyzes the data from the savegame and sets up the corresponding gui elements
+        * author: https://github.com/RayRay5
+        */
+        private void analyzeData()
         {
-            Cursor.Current = Cursors.WaitCursor;
             if (isInvalidFile())
             {
                 MessageBox.Show("Invalid file provided");
@@ -268,16 +289,22 @@ namespace WindowsFormsApplication1
             string filename = textBox1.Text;
             string[] lines = File.ReadAllLines(filename);
 
+            /*
+            * read bank account money
+            */
             for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].Contains("money_account"))
                 {
-                    textBox2.Text = rr(lines[i]);
+                    textBox2.Text = regexReplaceNonNumericChars(lines[i]);
                     break;
                 }
             }
 
-            for(int i = 0; i < lines.Length; ++i)
+            /*
+            * read garage data
+            */
+            for (int i = 0; i < lines.Length; ++i)
             {
                 if (Regex.IsMatch(lines[i], "garage.") && !(lines[i].Contains("garages")))
                 //if (lines[i].Contains("garage") && !lines[i].Contains("garages"))
@@ -295,28 +322,22 @@ namespace WindowsFormsApplication1
                     string size = Regex.Replace(lines[i], " status: ", "");
 
                     //addString += " (Size: " + size + ")";
-                    if(!addString.Contains("garage"))
+                    if (!addString.Contains("garage"))
                     {
                         garageSize.Add(size);
                         garages.Add(addString);
                     }
-                    
+
                 }
             }
             treeView1.Nodes[1].Text += "(Size: " + garages.Count.ToString() + ")";
             //MessageBox.Show(garages.Count.ToString());
 
             string output = "";
-            for(int i = 0; i < garages.Count; ++i)
+            for (int i = 0; i < garages.Count; ++i)
             {
                 output += garages[i] + ";";
             }
-            //MessageBox.Show(output);
-            //Clipboard.SetText(output);
-            //MessageBox.Show(garages.Count.ToString());
-
-            //MessageBox.Show(garages.Count.ToString());
-            //MessageBox.Show(counter.ToString());
 
             for (int j = 0; j < garages.Count; ++j)
             {
@@ -337,131 +358,122 @@ namespace WindowsFormsApplication1
 
             treeView1.Nodes[0].Text += "(Size: " + otherStuff.Count + ")";
 
+            /*
+            * read exp and skill data
+            */
             for (int i = 0; i < 10000; ++i)
             {
                 if (lines[i].Contains("experience_points"))
                 {
-                    textBox3.Text = rr(lines[i]);
+                    textBox3.Text = regexReplaceNonNumericChars(lines[i]);
                     i++;
-                    comboBox1.SelectedIndex = Int32.Parse(rr(lines[i])) + 1;
+                    comboBox1.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
                     i++;
-                    comboBox2.SelectedIndex = Int32.Parse(rr(lines[i])) + 1;
+                    comboBox2.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
                     i++;
-                    comboBox3.SelectedIndex = Int32.Parse(rr(lines[i])) + 1;
+                    comboBox3.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
                     i++;
-                    comboBox4.SelectedIndex = Int32.Parse(rr(lines[i])) + 1;
+                    comboBox4.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
                     i++;
-                    comboBox5.SelectedIndex = Int32.Parse(rr(lines[i])) + 1;
+                    comboBox5.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
                     i++;
-                    comboBox6.SelectedIndex = Int32.Parse(rr(lines[i])) + 1;
+                    comboBox6.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
                     Cursor.Current = Cursors.Default;
 
-                    /*string output = "";
-                    foreach(string g in garages)
-                    {
-                        output += g;
-                        output += "\n";
-                    }
-                    MessageBox.Show(output);*/
                     return;
                 }
             }
-            
+        }
+
+        /**
+        * executes the analyzationof the profile data
+        * author: https://github.com/RayRay5
+        */
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            analyzeData();
             Cursor.Current = Cursors.Default;
         }
 
-        //slow start
+        /**
+        * unified version to set data for predefinded settings
+        * author: https://github.com/RayRay5
+        */
+        private void applyPresetData(string exp, string money, string skill, string adrskill)
+        {
+            if (isInvalidFile())
+            {
+                return;
+            }
+            string filename = ofd.FileName;
+            string[] lines = File.ReadAllLines(filename);
+
+
+            /*
+            * Write money bank account data
+            */
+            for (int i = 0; i < lines.Length; ++i)
+            {
+                if (lines[i].Contains("money_account"))
+                {
+                    lines[i] = " money_account: " + money;
+                    break;
+                }
+            }
+
+            /*
+            * Write exp and skill data
+            */
+            for (int i = 0; i < 10000; ++i)
+            {
+                if (lines[i].Contains("experience_points"))
+                {
+                    lines[i] = " experience_points: " + exp;
+                    i++;
+                    lines[i] = " adr: " + adrskill;
+                    i++;
+                    lines[i] = " long_dist: " + skill;
+                    i++;
+                    lines[i] = " heavy: " + skill;
+                    i++;
+                    lines[i] = " fragile: " + skill;
+                    i++;
+                    lines[i] = " urgent: " + skill;
+                    i++;
+                    lines[i] = " mechanical: " + skill;
+
+                    File.WriteAllLines(ofd.FileName, lines);
+                    Cursor.Current = Cursors.Default;
+                    MessageBox.Show("Saved savegame modifications");
+                    return;
+                }
+            }
+        }
+
+        /**
+        * Applies slow start settings, see README.md
+        * same as apply settings, but reduced
+        * author: https://github.com/RayRay5
+        */
         private void button4_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            if (isInvalidFile())
-            {
-                return;
-            }
-            string filename = ofd.FileName;
-            string[] lines = File.ReadAllLines(filename);
-
-            for (int i = 0; i < lines.Length; ++i)
-            {
-                if (lines[i].Contains("money_account"))
-                {
-                    lines[i] = " money_account: 100000";
-                    break;
-                }
-            }
-
-            for (int i = 0; i < 10000; ++i)
-            {
-                if (lines[i].Contains("experience_points"))
-                {
-                    lines[i] = " experience_points: 5000";
-                    i++;
-                    lines[i] = " adr: 0";
-                    i++;
-                    lines[i] = " long_dist: 0";
-                    i++;
-                    lines[i] = " heavy: 0";
-                    i++;
-                    lines[i] = " fragile: 0";
-                    i++;
-                    lines[i] = " urgent: 0";
-                    i++;
-                    lines[i] = " mechanical: 0";
-
-                    File.WriteAllLines(ofd.FileName, lines);
-                    Cursor.Current = Cursors.Default;
-                    MessageBox.Show("Saved savegame modifications");
-                    return;
-                }
-            }
-            Cursor.Current = Cursors.Default;
+            applyPresetData("5000", "100000", "0", "0");
+            analyzeData();
+            Cursor.Current = Cursors.Default; 
         }
 
-        //quick start
+        /**
+        * Applies quick start settings, see README.md
+        * same as "Apply 'Slow Start'", but with different values
+        * author: https://github.com/RayRay5
+        */
         private void button5_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            if (isInvalidFile())
-            {
-                return;
-            }
-
-            string filename = ofd.FileName;
-            string[] lines = File.ReadAllLines(filename);
-
-            for (int i = 0; i < lines.Length; ++i)
-            {
-                if (lines[i].Contains("money_account"))
-                {
-                    lines[i] = " money_account: 100000000";
-                    break;
-                }
-            }
-
-            for (int i = 0; i < 10000; ++i)
-            {
-                if (lines[i].Contains("experience_points"))
-                {
-                    lines[i] = " experience_points: 5000000";
-                    i++;
-                    lines[i] = " adr: 63";
-                    i++;
-                    lines[i] = " long_dist: 6";
-                    i++;
-                    lines[i] = " heavy: 6";
-                    i++;
-                    lines[i] = " fragile: 6";
-                    i++;
-                    lines[i] = " urgent: 6";
-                    i++;
-                    lines[i] = " mechanical: 6";
-
-                    File.WriteAllLines(ofd.FileName, lines);
-                    Cursor.Current = Cursors.Default;
-                    MessageBox.Show("Saved savegame modifications");
-                    return;
-                }
-            }
+            applyPresetData("5000000", "100000000", "6", "63");
+            analyzeData();
             Cursor.Current = Cursors.Default;
         }
 
@@ -470,7 +482,10 @@ namespace WindowsFormsApplication1
 
         }
 
-        //downgrade garage
+        /**
+        * Maniuplates the data for "downgrading" a garage
+        * author: https://github.com/RayRay5
+        */
         private void button6_Click(object sender, EventArgs e)
         {
             TreeNode t = treeView1.SelectedNode;
@@ -493,7 +508,10 @@ namespace WindowsFormsApplication1
             }
         }
 
-        //upgrade garage
+        /**
+        * Maniuplates the data for "upgrading" a garage
+        * author: https://github.com/RayRay5
+        */
         private void button7_Click(object sender, EventArgs e)
         {
             TreeNode t = treeView1.SelectedNode;
@@ -522,6 +540,10 @@ namespace WindowsFormsApplication1
             }
         }
 
+        /**
+        * Select the backup file
+        * author: https://github.com/RayRay5
+        */
         private void button8_Click(object sender, EventArgs e)
         {
             sfd.Filter = "ETS2 Savegames|*.sii";
