@@ -13,6 +13,8 @@ C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsForm
 C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\bin\Debug\ETS2_SaveEditor.exe
 C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\bin\Debug\ETS2_SaveEditor.pdb
 C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\obj\Debug\ETS2_saveeditor.csprojResolveAssemblyReference.cache
-C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Form1.resources
 C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\obj\Debug\saveeditor.Properties.Resources.resources
 C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\obj\Debug\ETS2_saveeditor.csproj.GenerateResource.Cache
+C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\obj\Debug\ets2_saveeditor.ets2_saveeditor_main_form.resources
+C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\obj\Debug\ets2_saveeditor.newForm.resources
+C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\obj\Debug\saveeditor.editValue.resources
