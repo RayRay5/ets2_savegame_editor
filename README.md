@@ -7,7 +7,7 @@ No other special files or libaries are required
 Compiled binary files can be found in ~/executables/
 
 
-This is a WIP and will be updated once in a while.
+This is a WIP and will be updated once in a while. **This program does work with ETS2 AND ATS Savegames**
 
 
 Short "how to use":
