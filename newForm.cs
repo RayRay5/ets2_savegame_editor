@@ -559,7 +559,30 @@ namespace ets2_saveeditor
                     string companyName = Regex.Replace(companyNameLocation, "[.][_a-z]*", "");
                     string companyLocation = Regex.Replace(companyNameLocation, "[_a-z]*[.]", "");
 
-                    int availableCompanyJobs = Int32.Parse(Regex.Replace(ets2_saveeditor_main_form.lines[i + 4], "job_offer: ", ""));
+                    int availableCompanyJobs = 0;
+                    try
+                    {
+                        availableCompanyJobs = Int32.Parse(Regex.Replace(ets2_saveeditor_main_form.lines[i + 4], "job_offer: ", ""));
+                    }
+                    catch(Exception)
+                    {
+                        try
+                        {
+                            availableCompanyJobs = Int32.Parse(Regex.Replace(ets2_saveeditor_main_form.lines[i + 5], "job_offer: ", ""));
+                        }
+                        catch(Exception)
+                        {
+                            try
+                            {
+                                availableCompanyJobs = Int32.Parse(Regex.Replace(ets2_saveeditor_main_form.lines[i + 6], "job_offer: ", ""));
+                            }
+                            catch(Exception)
+                            {
+                                availableCompanyJobs = Int32.Parse(Regex.Replace(ets2_saveeditor_main_form.lines[i + 7], "job_offer: ", ""));
+                            }
+                        }
+                        //MessageBox.Show(ets2_saveeditor_main_form.lines[i]);
+                    }
                     //MessageBox.Show("company: " + companyName + " in city: " + companyLocation + " joboffers: " + availableCompanyJobs.ToString());
                     companyOffering.Add(companyNameLocation, availableCompanyJobs.ToString());
 

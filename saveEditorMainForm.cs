@@ -20,13 +20,17 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Threading;
 using System.Timers;
+using System.Diagnostics;
 
 namespace ets2_saveeditor
 {
     public partial class ets2_saveeditor_main_form : Form
     {
+        private static readonly string _versionNumber = "1.1 Beta";
         OpenFileDialog ofd = new OpenFileDialog();
         SaveFileDialog sfd = new SaveFileDialog();
+
+        public string filename = "";
 
         ContextMenuStrip normalstrip = new ContextMenuStrip();
         ContextMenuStrip cloneviewstrip = new ContextMenuStrip();
@@ -39,8 +43,6 @@ namespace ets2_saveeditor
         ToolStripMenuItem upgradeGarage = new ToolStripMenuItem("Upgrade Garage");
         ToolStripMenuItem downgradeGarage = new ToolStripMenuItem("Downgrade Garage");
         ToolStripMenuItem newHeadquarter = new ToolStripMenuItem("Make this garage your headquarter");
-        //ToolStripMenuItem striplabel2 = new ToolStripMenuItem("text2");
-        //ToolStripMenuItem striplabel3 = new ToolStripMenuItem("text3");
 
         ArrayList garages = new ArrayList();
         ArrayList garageSize = new ArrayList();
@@ -85,10 +87,13 @@ namespace ets2_saveeditor
 
             openInSecondView.Click += new System.EventHandler(this.striplabel1_Click);
             removeFromThisView.Click += new System.EventHandler(this.striplabel2_Click);
-            addToVisited.Click += new System.EventHandler(this.striplabel3_Click);
+            //addToVisited.Click += new System.EventHandler(this.striplabel3_Click);
+            addToVisited.MouseUp += new MouseEventHandler(this.striplabel3_Click);
             upgradeGarage.Click += new System.EventHandler(this.striplabel4_Click);
             downgradeGarage.Click += new System.EventHandler(this.striplabel5_Click);
             newHeadquarter.Click += new System.EventHandler(this.striplabel6_Click);
+
+            treeView1.NodeMouseClick += (_sender, args) => treeView1.SelectedNode = args.Node;
         }
 
         private void striplabel6_Click(object sender, EventArgs e)
@@ -116,12 +121,7 @@ namespace ets2_saveeditor
                 string tstring = t.ToString();
                 tstring = tstring.Replace("TreeNode: ", "");
                 int index = garages.IndexOf(tstring);
-                //garages[index] = tstring;
 
-                /*if(Int32.Parse(garageSize[index].ToString()) <= 2 && Int32.Parse(garageSize[index].ToString()) >= 0)
-                {
-
-                }*/
                 if (index != -1)
                 {
                     if (Int32.Parse(garageSize[index].ToString()) <= 0)
@@ -166,12 +166,7 @@ namespace ets2_saveeditor
                 string tstring = t.ToString();
                 tstring = tstring.Replace("TreeNode: ", "");
                 int index = garages.IndexOf(tstring);
-                //garages[index] = tstring;
 
-                /*if(Int32.Parse(garageSize[index].ToString()) <= 2 && Int32.Parse(garageSize[index].ToString()) >= 0)
-                {
-
-                }*/
                 if (index != -1)
                 {
                     if (Int32.Parse(garageSize[index].ToString()) >= 3)
@@ -193,6 +188,27 @@ namespace ets2_saveeditor
                         int size = Int32.Parse(garageSize[index].ToString());
                     }
                 }
+            }
+            else
+            {
+                for(int i = 0; i < garageSize.Count; ++i)
+                {
+                    if(Int32.Parse(garageSize[i].ToString()) < 3)
+                    {
+                        garageSize[i] = "3";
+                    }
+                    
+                }
+
+                this.Invoke(new Action(() => { MessageBox.Show("Unlocked all Garages"); }));
+                treeView1.SelectedNode = treeView1.Nodes[1];
+                int ii = 0;
+                foreach(TreeNode n in treeView1.Nodes[1].Nodes)
+                {
+                    changeForeColor(n, ii);
+                    ++ii;
+                }
+                button5.Enabled = false;
             }
         }
 
@@ -221,10 +237,11 @@ namespace ets2_saveeditor
             treeView2.SelectedNode.Remove();
         }
 
-        private void striplabel3_Click(object sender, EventArgs e)
-        {
+        private void striplabel3_Click(object sender, MouseEventArgs e)
+        {            
             visitedCities.Add(treeView1.SelectedNode.Text);
             treeView1.SelectedNode.ContextMenuStrip = null;
+
             TreeNode newNode = (TreeNode)treeView1.SelectedNode.Clone();
             newNode.ForeColor = Color.Black;
             treeView1.SelectedNode.ForeColor = Color.DarkGreen;
@@ -273,6 +290,10 @@ namespace ets2_saveeditor
             }
         }
 
+        /**
+         * Timer for updating the progessbar
+         * author: https://github.com/RayRay5
+         */
         private void progressBarUpdateTimer_Elapsed(object sender, EventArgs e)
         {
             try
@@ -281,7 +302,7 @@ namespace ets2_saveeditor
             }
             catch(Exception exception)
             {
-
+                this.Invoke(new Action(() => { MessageBox.Show("Unexpected exception occured: " + exception.ToString()); }));
             }
         }
 
@@ -403,12 +424,16 @@ namespace ets2_saveeditor
             File.WriteAllText(ofd.FileName, content);
             progress++;
 
+            toggleContextMenu(true);
+
             this.Invoke(new Action(() =>
             {
                 this.button1.Enabled = true;
                 this.button2.Enabled = true;
                 this.button3.Enabled = true;
-                this.button4.Enabled = true;
+                this.button4.Enabled = false;// true;
+                this.button5.Enabled = true;
+                this.button6.Enabled = true;
                 this.button8.Enabled = true;
 
                 this.comboBox1.Enabled = true;
@@ -442,6 +467,53 @@ namespace ets2_saveeditor
         }
 
         /**
+         * Toggles the ContextMenuStrips
+         * Intended use is to disable them during the writeback phase
+         * author: https://github.com/RayRay5
+         */
+        private void toggleContextMenu(bool state)
+        {
+            try
+            {
+                for (int nn = 0; nn < treeView1.Nodes.Count; ++nn)
+                {
+                    treeView1.Nodes[nn].ContextMenuStrip.Enabled = state;
+                    foreach (TreeNode child in treeView1.Nodes[nn].Nodes)
+                    {
+                        try
+                        {
+                            child.ContextMenuStrip.Enabled = state;
+                        }
+                        catch (Exception)
+                        {
+                            //Console.WriteLine("exception at: " + child.Text);
+                        }
+                    }
+                }
+
+                for (int nn = 0; nn < treeView2.Nodes.Count; ++nn)
+                {
+                    treeView2.Nodes[nn].ContextMenuStrip.Enabled = state;
+                    foreach (TreeNode child in treeView2.Nodes[nn].Nodes)
+                    {
+                        try
+                        {
+                            child.ContextMenuStrip.Enabled = state;
+                        }
+                        catch (Exception)
+                        {
+                            //Console.WriteLine("exception at: " + child.Text);
+                        }
+                    }
+                }
+            }
+            catch(Exception)
+            {
+
+            }
+        }
+
+        /**
         * Applies and saves the settings you made. (writes back all stuff to file in the hopefully correct format)
         * If you encounter issues with your savegame, please create an issue on this project on github
         * author: https://github.com/RayRay5
@@ -449,6 +521,8 @@ namespace ets2_saveeditor
         private void button2_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
+
+            toggleContextMenu(false);
 
             if(isInvalidFile())
             {
@@ -467,6 +541,8 @@ namespace ets2_saveeditor
             this.button2.Enabled = false;
             this.button3.Enabled = false;
             this.button4.Enabled = false;
+            this.button5.Enabled = false;
+            this.button6.Enabled = false;
             this.button8.Enabled = false;
 
             this.comboBox1.Enabled = false;
@@ -638,7 +714,12 @@ namespace ets2_saveeditor
             thread.Start();
             Thread info = new Thread(() => backgroundCallBack());
             info.Start();
-            
+
+            createProgressTimer();
+        }
+
+        private void createProgressTimer()
+        {
             //progressBarUpdateTimer.Start();
             progressBarUpdateTimer = new System.Timers.Timer();
             progressBarUpdateTimer.Enabled = true;
@@ -712,7 +793,7 @@ namespace ets2_saveeditor
                 treeView1.Nodes[i].ContextMenuStrip = normalstrip;
             }
             
-            string filename = textBox1.Text;
+            filename = textBox1.Text;
             lines = File.ReadAllLines(filename);
 
             calculateUpperLimit(lines);
@@ -878,7 +959,9 @@ namespace ets2_saveeditor
                 }
             }
 
-            //button4.Enabled = true; // enable job dispatcher
+            button4.Enabled = false;  // true; // enable job dispatcher
+            button5.Enabled = true; // enable unlock buttons
+            button6.Enabled = true; // enable unlock buttons
             Cursor.Current = Cursors.Default;
 
             //MessageBox.Show("cities[0]: " + cities[0]);
@@ -981,7 +1064,8 @@ namespace ets2_saveeditor
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            
+            //treeView1.SelectedNode = (TreeNode) sender;
+            //MessageBox.Show(e.Node.ToString());
         }
 
         /**
@@ -1002,6 +1086,117 @@ namespace ets2_saveeditor
         {
             Form newForm = new newForm();
             newForm.Show();
+        }
+
+        private void licenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("GNU General Public License v3.0 from June 29th, 2007." + Environment.NewLine + Environment.NewLine +
+                "You can access the full text over here " + Environment.NewLine + 
+                "https://raw.githubusercontent.com/RayRay5/ets2_savegame_editor/master/LICENSE", "License");
+        }
+
+        private void versionInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Version " + _versionNumber, "Installed Version");
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("ETS2 Savegame Editor by https://github.com/RayRay5", "About");
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void systemRequirementsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(".NET Framework Version 4.6 or later" + Environment.NewLine + "No other special requirements"
+                + Environment.NewLine + "However a good CPU is recommended", "System Requirements");
+        }
+
+        private void everyoneIWouldLikeToThankToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("TODO", "THANK YOU!");
+        }
+
+        private void changelogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //ProcessStartInfo sInfo = new ProcessStartInfo("http://google.com");
+            //Process.Start(sInfo);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            treeView1.Nodes[1].Collapse();
+            striplabel4_Click(sender, e);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            visitedCities.Clear();
+            string[] allKeys = uniqueCities.Keys.ToArray();
+            for(int i = 0; i < uniqueCities.Count; ++i)
+            {
+                visitedCities.Add(allKeys[i]);
+            }
+            
+            //TODO
+
+            treeView1.SelectedNode = treeView1.Nodes[2];
+            treeView1.Nodes[3].Nodes.Clear();
+
+            foreach (TreeNode n in treeView1.Nodes[2].Nodes)
+            {
+                TreeNode copyNode = new TreeNode();
+                copyNode.Text = n.Text;
+                treeView1.Nodes[3].Nodes.Add(copyNode);
+                n.ForeColor = Color.Green;
+                //context menu strip
+                n.ContextMenuStrip = null;
+            }
+
+            foreach(TreeNode n in treeView1.Nodes[3].Nodes)
+            {
+                n.ForeColor = Color.Green;
+            }
+            treeView1.Nodes[3].Text = "Visited Cities(Size: " + treeView1.Nodes[3].Nodes.Count + ")";
+            button6.Enabled = false;
+            this.Invoke(new Action(() => { MessageBox.Show("Unlocked all Cities"); }));
+        }
+
+        private void removeEmptyLinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            filename = textBox1.Text;
+            string[] lines = File.ReadAllLines(filename);
+            ArrayList writeBackLines = new ArrayList();
+
+            foreach(string line in lines)
+            {
+                //Console.WriteLine(line);
+
+                if(line != "\r\n" || line != " \r\n")
+                {
+                    writeBackLines.Add(line);
+                }
+                else
+                {
+                    Console.WriteLine("leer");
+                }
+            }
+
+            string[] writeBack = (string[])writeBackLines.ToArray(typeof(string));
+            progressBar1.Value = 0;
+            progressBar1.Maximum = writeBack.Length + 1;
+            createProgressTimer();
+            this.button2.Visible = false;
+            this.progressBar1.Visible = true;
+
+            thread = new Thread(() => doBackgroundStuff(writeBack));
+            thread.Start();
+            Thread info = new Thread(() => backgroundCallBack());
+            info.Start();
         }
     }
 }

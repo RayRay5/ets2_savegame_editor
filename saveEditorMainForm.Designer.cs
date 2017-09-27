@@ -38,6 +38,7 @@ namespace ets2_saveeditor
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
@@ -69,6 +70,37 @@ namespace ets2_saveeditor
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.button4 = new System.Windows.Forms.Button();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menu1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optimizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeEmptyLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fAQToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadYourSavegameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.analyzeYourSavegameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeTheValluesYouWantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.applyAndSavesaveSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.waitForASuccessMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.doneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpWithToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.commonProblemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.licenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.versionInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changelogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.systemRequirementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.everyoneIWouldLikeToThankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeSureThatYouSavegameIsNotCorruptedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeSureThatYouHaveNETFrameworkVersion46OrLaterInstalledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeSureThatYouDecryptedTheFileUsingOneOfTheVariousAvailableToolsMakeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downgradeAllGaragesToLowestLevelLevel0ApplyAnsSaveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -77,6 +109,11 @@ namespace ets2_saveeditor
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -413,7 +450,7 @@ namespace ets2_saveeditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(319, 326);
+            this.treeView1.Size = new System.Drawing.Size(319, 327);
             this.treeView1.TabIndex = 34;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -433,10 +470,11 @@ namespace ets2_saveeditor
             this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.vScrollBar1.Enabled = false;
-            this.vScrollBar1.Location = new System.Drawing.Point(1041, 9);
+            this.vScrollBar1.Location = new System.Drawing.Point(1041, 24);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 371);
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 376);
             this.vScrollBar1.TabIndex = 38;
+            this.vScrollBar1.Visible = false;
             // 
             // textBox2
             // 
@@ -475,7 +513,7 @@ namespace ets2_saveeditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeView2.Location = new System.Drawing.Point(3, 0);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(315, 326);
+            this.treeView2.Size = new System.Drawing.Size(315, 327);
             this.treeView2.TabIndex = 42;
             // 
             // splitContainer1
@@ -493,7 +531,7 @@ namespace ets2_saveeditor
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView2);
-            this.splitContainer1.Size = new System.Drawing.Size(644, 326);
+            this.splitContainer1.Size = new System.Drawing.Size(644, 328);
             this.splitContainer1.SplitterDistance = 322;
             this.splitContainer1.TabIndex = 43;
             // 
@@ -513,7 +551,7 @@ namespace ets2_saveeditor
             // 
             this.splitter1.Location = new System.Drawing.Point(0, 0);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 389);
+            this.splitter1.Size = new System.Drawing.Size(3, 400);
             this.splitter1.TabIndex = 45;
             this.splitter1.TabStop = false;
             this.splitter1.Visible = false;
@@ -523,7 +561,7 @@ namespace ets2_saveeditor
             this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer2.Location = new System.Drawing.Point(9, 12);
+            this.splitContainer2.Location = new System.Drawing.Point(9, 27);
             this.splitContainer2.Name = "splitContainer2";
             // 
             // splitContainer2.Panel1
@@ -555,9 +593,10 @@ namespace ets2_saveeditor
             // 
             // splitContainer2.Panel2
             // 
+            this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer1);
             this.splitContainer2.Panel2.Controls.Add(this.label9);
-            this.splitContainer2.Size = new System.Drawing.Size(1024, 365);
+            this.splitContainer2.Size = new System.Drawing.Size(1024, 363);
             this.splitContainer2.SplitterDistance = 369;
             this.splitContainer2.TabIndex = 46;
             // 
@@ -574,12 +613,262 @@ namespace ets2_saveeditor
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Location = new System.Drawing.Point(105, 5);
+            this.splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.button5);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.button6);
+            this.splitContainer3.Size = new System.Drawing.Size(217, 17);
+            this.splitContainer3.SplitterDistance = 104;
+            this.splitContainer3.TabIndex = 44;
+            // 
+            // button5
+            // 
+            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button5.Enabled = false;
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(4, 0);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(97, 17);
+            this.button5.TabIndex = 0;
+            this.button5.Text = "Unlock All Garages";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button6
+            // 
+            this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button6.Enabled = false;
+            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button6.Location = new System.Drawing.Point(3, 0);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(103, 17);
+            this.button6.TabIndex = 0;
+            this.button6.Text = "Unlock All Cities";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu1ToolStripMenuItem,
+            this.menu2ToolStripMenuItem,
+            this.toolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(3, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1054, 24);
+            this.menuStrip1.TabIndex = 48;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // menu1ToolStripMenuItem
+            // 
+            this.menu1ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optimizeToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.menu1ToolStripMenuItem.Name = "menu1ToolStripMenuItem";
+            this.menu1ToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.menu1ToolStripMenuItem.Text = "File";
+            // 
+            // optimizeToolStripMenuItem
+            // 
+            this.optimizeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeEmptyLinesToolStripMenuItem});
+            this.optimizeToolStripMenuItem.Enabled = false;
+            this.optimizeToolStripMenuItem.Name = "optimizeToolStripMenuItem";
+            this.optimizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optimizeToolStripMenuItem.Text = "Optimize";
+            // 
+            // removeEmptyLinesToolStripMenuItem
+            // 
+            this.removeEmptyLinesToolStripMenuItem.Name = "removeEmptyLinesToolStripMenuItem";
+            this.removeEmptyLinesToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.removeEmptyLinesToolStripMenuItem.Text = "Remove empty lines";
+            this.removeEmptyLinesToolStripMenuItem.Click += new System.EventHandler(this.removeEmptyLinesToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // menu2ToolStripMenuItem
+            // 
+            this.menu2ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fAQToolStripMenuItem,
+            this.helpWithToolStripMenuItem,
+            this.commonProblemsToolStripMenuItem});
+            this.menu2ToolStripMenuItem.Name = "menu2ToolStripMenuItem";
+            this.menu2ToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.menu2ToolStripMenuItem.Text = "FAQ";
+            // 
+            // fAQToolStripMenuItem
+            // 
+            this.fAQToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadYourSavegameToolStripMenuItem,
+            this.analyzeYourSavegameToolStripMenuItem,
+            this.changeTheValluesYouWantToolStripMenuItem,
+            this.applyAndSavesaveSettingsToolStripMenuItem,
+            this.waitForASuccessMessageToolStripMenuItem,
+            this.doneToolStripMenuItem});
+            this.fAQToolStripMenuItem.Name = "fAQToolStripMenuItem";
+            this.fAQToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.fAQToolStripMenuItem.Text = "How-To";
+            // 
+            // loadYourSavegameToolStripMenuItem
+            // 
+            this.loadYourSavegameToolStripMenuItem.Name = "loadYourSavegameToolStripMenuItem";
+            this.loadYourSavegameToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.loadYourSavegameToolStripMenuItem.Text = "1. Load your savegame";
+            // 
+            // analyzeYourSavegameToolStripMenuItem
+            // 
+            this.analyzeYourSavegameToolStripMenuItem.Name = "analyzeYourSavegameToolStripMenuItem";
+            this.analyzeYourSavegameToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.analyzeYourSavegameToolStripMenuItem.Text = "2. Analyze your savegame";
+            // 
+            // changeTheValluesYouWantToolStripMenuItem
+            // 
+            this.changeTheValluesYouWantToolStripMenuItem.Name = "changeTheValluesYouWantToolStripMenuItem";
+            this.changeTheValluesYouWantToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.changeTheValluesYouWantToolStripMenuItem.Text = "3. Change the vallues you want";
+            // 
+            // applyAndSavesaveSettingsToolStripMenuItem
+            // 
+            this.applyAndSavesaveSettingsToolStripMenuItem.Name = "applyAndSavesaveSettingsToolStripMenuItem";
+            this.applyAndSavesaveSettingsToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.applyAndSavesaveSettingsToolStripMenuItem.Text = "4. Apply and save settings";
+            // 
+            // waitForASuccessMessageToolStripMenuItem
+            // 
+            this.waitForASuccessMessageToolStripMenuItem.Name = "waitForASuccessMessageToolStripMenuItem";
+            this.waitForASuccessMessageToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.waitForASuccessMessageToolStripMenuItem.Text = "5. Wait for a success message";
+            // 
+            // doneToolStripMenuItem
+            // 
+            this.doneToolStripMenuItem.Name = "doneToolStripMenuItem";
+            this.doneToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.doneToolStripMenuItem.Text = "6. Done";
+            // 
+            // helpWithToolStripMenuItem
+            // 
+            this.helpWithToolStripMenuItem.Name = "helpWithToolStripMenuItem";
+            this.helpWithToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.helpWithToolStripMenuItem.Text = "Help with...";
+            // 
+            // commonProblemsToolStripMenuItem
+            // 
+            this.commonProblemsToolStripMenuItem.Name = "commonProblemsToolStripMenuItem";
+            this.commonProblemsToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.commonProblemsToolStripMenuItem.Text = "Problems and Solutions Database";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.licenseToolStripMenuItem,
+            this.versionInfoToolStripMenuItem,
+            this.changelogToolStripMenuItem,
+            this.aboutToolStripMenuItem,
+            this.systemRequirementsToolStripMenuItem,
+            this.everyoneIWouldLikeToThankToolStripMenuItem});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(24, 20);
+            this.toolStripMenuItem1.Text = "?";
+            // 
+            // licenseToolStripMenuItem
+            // 
+            this.licenseToolStripMenuItem.Name = "licenseToolStripMenuItem";
+            this.licenseToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.licenseToolStripMenuItem.Text = "License";
+            this.licenseToolStripMenuItem.Click += new System.EventHandler(this.licenseToolStripMenuItem_Click);
+            // 
+            // versionInfoToolStripMenuItem
+            // 
+            this.versionInfoToolStripMenuItem.Name = "versionInfoToolStripMenuItem";
+            this.versionInfoToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.versionInfoToolStripMenuItem.Text = "Version Info";
+            this.versionInfoToolStripMenuItem.Click += new System.EventHandler(this.versionInfoToolStripMenuItem_Click);
+            // 
+            // changelogToolStripMenuItem
+            // 
+            this.changelogToolStripMenuItem.Name = "changelogToolStripMenuItem";
+            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.changelogToolStripMenuItem.Text = "Changelog";
+            this.changelogToolStripMenuItem.Click += new System.EventHandler(this.changelogToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // systemRequirementsToolStripMenuItem
+            // 
+            this.systemRequirementsToolStripMenuItem.Name = "systemRequirementsToolStripMenuItem";
+            this.systemRequirementsToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.systemRequirementsToolStripMenuItem.Text = "System Requirements";
+            this.systemRequirementsToolStripMenuItem.Click += new System.EventHandler(this.systemRequirementsToolStripMenuItem_Click);
+            // 
+            // everyoneIWouldLikeToThankToolStripMenuItem
+            // 
+            this.everyoneIWouldLikeToThankToolStripMenuItem.Name = "everyoneIWouldLikeToThankToolStripMenuItem";
+            this.everyoneIWouldLikeToThankToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.everyoneIWouldLikeToThankToolStripMenuItem.Text = "Everyone I would like to thank...";
+            this.everyoneIWouldLikeToThankToolStripMenuItem.Click += new System.EventHandler(this.everyoneIWouldLikeToThankToolStripMenuItem_Click);
+            // 
+            // makeSureThatYouSavegameIsNotCorruptedToolStripMenuItem
+            // 
+            this.makeSureThatYouSavegameIsNotCorruptedToolStripMenuItem.Name = "makeSureThatYouSavegameIsNotCorruptedToolStripMenuItem";
+            this.makeSureThatYouSavegameIsNotCorruptedToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // makeSureThatYouHaveNETFrameworkVersion46OrLaterInstalledToolStripMenuItem
+            // 
+            this.makeSureThatYouHaveNETFrameworkVersion46OrLaterInstalledToolStripMenuItem.Name = "makeSureThatYouHaveNETFrameworkVersion46OrLaterInstalledToolStripMenuItem";
+            this.makeSureThatYouHaveNETFrameworkVersion46OrLaterInstalledToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // makeSureThatYouDecryptedTheFileUsingOneOfTheVariousAvailableToolsMakeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem
+            // 
+            this.makeSureThatYouDecryptedTheFileUsingOneOfTheVariousAvailableToolsMakeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem.Name = "makeSureThatYouDecryptedTheFileUsingOneOfTheVariousAvailableToolsMakeSureThatTheD" +
+    "ecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem";
+            this.makeSureThatYouDecryptedTheFileUsingOneOfTheVariousAvailableToolsMakeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // downgradeAllGaragesToLowestLevelLevel0ApplyAnsSaveChangesToolStripMenuItem
+            // 
+            this.downgradeAllGaragesToLowestLevelLevel0ApplyAnsSaveChangesToolStripMenuItem.Name = "downgradeAllGaragesToLowestLevelLevel0ApplyAnsSaveChangesToolStripMenuItem";
+            this.downgradeAllGaragesToLowestLevelLevel0ApplyAnsSaveChangesToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // makeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem
+            // 
+            this.makeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem.Name = "makeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem";
+            this.makeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem.Size = new System.Drawing.Size(481, 22);
+            this.makeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem.Text = "Make sure that the decrypted file was saved using \'g_save_format \"2\" \'.";
+            // 
             // ets2_saveeditor_main_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(1057, 389);
+            this.ClientSize = new System.Drawing.Size(1057, 400);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.vScrollBar1);
@@ -595,7 +884,14 @@ namespace ets2_saveeditor
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -632,6 +928,37 @@ namespace ets2_saveeditor
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem menu1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menu2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fAQToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem licenseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem versionInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpWithToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem commonProblemsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem downgradeAllGaragesToLowestLevelLevel0ApplyAnsSaveChangesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeSureThatYouDecryptedTheFileUsingOneOfTheVariousAvailableToolsMakeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeSureThatYouSavegameIsNotCorruptedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeSureThatYouHaveNETFrameworkVersion46OrLaterInstalledToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem systemRequirementsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeSureThatTheDecryptedFileWasSavedUsinggsaveformat2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadYourSavegameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem analyzeYourSavegameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changeTheValluesYouWantToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem applyAndSavesaveSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem waitForASuccessMessageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem doneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem everyoneIWouldLikeToThankToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changelogToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.ToolStripMenuItem optimizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeEmptyLinesToolStripMenuItem;
     }
 }
 

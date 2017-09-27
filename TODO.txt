@@ -1,0 +1,12 @@
+﻿TODO
+
+Job Dispatcher
+Job Editor -> zurückschreiben muss noch gemacht werden
+Truck Editor
+Trailer Editor
+Händlerfreischaltung
+JC Freischaltung
+Savegame Optimierung (leere Zeilen löschen)
+Automatisches Decrypting
+Korruptionsüberprüfung der Datei
+Schäden annulieren

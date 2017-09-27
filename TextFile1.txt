@@ -1,0 +1,9 @@
+﻿Q File is not decrypted Error
+A Make sure that you decrypted the file using one of the various available tools.
+
+Q Game crash when buying a truck, garage or after fast traveling
+A Downgrade all garages to lowest level (Level 0). Apply ans save changes
+
+Q Unknown exception
+A Make sure that you savegame is not corrupted
+A Make sure that you have .NET Framework Version 4.6 or later installed
