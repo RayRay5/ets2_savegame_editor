@@ -1,0 +1,22 @@
+﻿Changelog for ETS2 Savegame Editor
+
+=================================================================================================================================
+Changes Version 1.1 Beta
+=================================================================================================================================
+FIXED Exception when right clicking in the TreeView "Garages and Cities"
+FIXED Application Crash when right clicking in the TreeView "Garages and Cities"
+(hopefully) FIXED Weird behavior when right clicking in the TreeView "Garages and Cities"
+ADDED User Input will be completely disabled during writeback
+ADDED MenuBar
+	- ADDED FAQ section to MenuBar
+	- ADDED License, Version, Changelog, About, System Requirements and Thank you section to MenuBar
+	- ADDED Savegame Optimizer, currently disabled and not functional
+ADDED "Unlock All" Buttons and Functions for Garages and Cities.
+		Unlocking Garages will automaticly upgrade all of them to the highest level
+		"Unlock All" Buttons will be disabled if you performed this action already on your savegame
+REMOVED Context Menus from Treeview if they aren't neccessary
+PLANNED "Unlock All" Buttons will be disabled if number of unlocked elements equals the number of total elements
+
+TODO for FINAL Version Add stuff to the FAQ section
+
+=================================================================================================================================
