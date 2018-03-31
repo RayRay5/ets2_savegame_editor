@@ -1,0 +1,28 @@
+﻿Speicherstand auswerten
+Städte und Garagen
+Dateipfad der Sicherung
+Auftragseditor
+Alle Garagen freischalten
+Alle Städte aufdecken
+Datei
+Optimieren
+Beenden
+FAQ
+Hilfe mit ...
+Probleme und Lösungen
+Lizenz
+Version
+Äderungskatalog
+Über
+Systemanforderungen
+Danksagungen
+Datei öffnen
+Erfahrung
+Geld
+Langstrecke
+Hochwertig
+Zerbrechlich
+Drigend
+Sparsamkeit
+Änderungen speichern und anwenden
+ADR
