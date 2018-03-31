@@ -24,9 +24,13 @@ using System.Diagnostics;
 
 namespace ets2_saveeditor
 {
+    enum GarageSize : UInt16 { NULL = 0, TINY = 6, SMALL = 2, BIG = 3 };
+    enum GarageSlots : UInt16 { NULL = 0, TINY = 1, SMALL = 3, BIG = 5 };
+
     public partial class ets2_saveeditor_main_form : Form
     {
-        private static readonly string _versionNumber = "1.1 Beta";
+        private static readonly string _versionNumber = "1.1.0.8 (Beta - to be released as final)";
+        private static readonly string _internal_version_number = "1.1.0.8";
         OpenFileDialog ofd = new OpenFileDialog();
         SaveFileDialog sfd = new SaveFileDialog();
 
@@ -51,16 +55,23 @@ namespace ets2_saveeditor
         ArrayList visitedCities = new ArrayList();
         ArrayList companies = new ArrayList();
         Dictionary<string, int> uniqueCities = new Dictionary<string, int>();
+        ArrayList allTrucks = new ArrayList();
+        ArrayList allDrivers = new ArrayList();
+        ArrayList allProfitLogs = new ArrayList();
 
         System.Timers.Timer progressBarUpdateTimer;
         Thread thread;
 
-        static int progress = 0;
-        static int visitedCitiesBeforeAnalyzation = 0;
-        static int upperLimit = 0;
+        static Int32 progress = 0;
+        static Int32 visitedCitiesBeforeAnalyzation = 0;
+        static Int32 upperLimit = 0;
+        static Int32 arrayCounter = 0;
+        static Int32 driverArrayCounter = 1; // = 1 if we satrt with custom hq instead of the default set in the code below
         static string dir;
 
         public static string[] lines;
+        public static Boolean[] ignore_lines;
+        public static string hq_city = "";
 
         public ets2_saveeditor_main_form()
         {
@@ -94,6 +105,11 @@ namespace ets2_saveeditor
             newHeadquarter.Click += new System.EventHandler(this.striplabel6_Click);
 
             treeView1.NodeMouseClick += (_sender, args) => treeView1.SelectedNode = args.Node;
+
+            if (File.Exists(@"config.txt") && saveEditor.Conf != null)
+            {
+                changeLanguage();
+            }
         }
 
         private void striplabel6_Click(object sender, EventArgs e)
@@ -124,18 +140,32 @@ namespace ets2_saveeditor
 
                 if (index != -1)
                 {
-                    if (Int32.Parse(garageSize[index].ToString()) <= 0)
+                    if (Int16.Parse(garageSize[index].ToString()) <= 0)
                     {
-                        MessageBox.Show("Garage can not be downgraded. Garage already has smallest possible size");
+                        MessageBox.Show("Garage can not be downgraded. Garage already has smallest possible size", "Garage can not be downgraded", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
-                    else if (Int32.Parse(garageSize[index].ToString()) > 3)
+                    else if (Int16.Parse(garageSize[index].ToString()) > 3 && Int16.Parse(garageSize[index].ToString()) != 6)
                     {
-
+                        //MessageBox.Show("Stop messing around with the savegame. This is definitely not going to work");
                     }
                     else
                     {
-                        garageSize[index] = (Int32.Parse(garageSize[index].ToString()) - 1).ToString();
+                        // Downgrade Garages
+                        if (Int16.Parse(garageSize[index].ToString()) == 6)
+                        {
+                            garageSize[index] = 0;
+                        }
+                        else if(Int16.Parse(garageSize[index].ToString()) == 2)
+                        {
+                            garageSize[index] = 6;
+                        }
+                        else
+                        {
+                            garageSize[index] = (Int16.Parse(garageSize[index].ToString()) - 1).ToString();
+                            //changeForeColor(t, index);
+                        }
                         changeForeColor(t, index);
+
                         if (t2 != null)
                         {
                             changeForeColor(t2, index);
@@ -148,7 +178,14 @@ namespace ets2_saveeditor
 
         private void striplabel4_Click(object sender, EventArgs e)
         {
-            if (treeView1.Nodes[1].IsExpanded)
+            /*MessageBox.Show("77: " + (string) sender.ToString());
+            /*string sending = sender.ToString();
+            if (sender.GetType() == typeof(System.Windows.Forms.Button))
+            {
+                MessageBox.Show("It's a button");
+            }*/
+
+            if (treeView1.Nodes[1].IsExpanded && !(sender.GetType() == typeof(System.Windows.Forms.Button)))
             {
                 TreeNode t = treeView1.SelectedNode;
                 TreeNode t2 = null;
@@ -169,27 +206,40 @@ namespace ets2_saveeditor
 
                 if (index != -1)
                 {
-                    if (Int32.Parse(garageSize[index].ToString()) >= 3)
+                    if (Int16.Parse(garageSize[index].ToString()) >= 3 && Int16.Parse(garageSize[index].ToString()) != 6)
                     {
-                        MessageBox.Show("Garage can not be upgraded. Garage already has biggest possible size");
+                        MessageBox.Show("Garage can not be upgraded. Garage already has biggest possible size", "Garage can not be upgraded", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
-                    else if (Int32.Parse(garageSize[index].ToString()) < 0)
+                    else if (Int16.Parse(garageSize[index].ToString()) < 0)
                     {
-
+                        MessageBox.Show("Stop messing around with the savegame. This is definitely not going to work and will crash your game", "You are messing around with your savegame", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                     else
                     {
-                        garageSize[index] = (Int32.Parse(garageSize[index].ToString()) + 1).ToString();
-                        changeForeColor(t, index);
-                        if (t2 != null)
+                        // Upgrade Garages
+                        if (Int16.Parse(garageSize[index].ToString()) == 0)
                         {
-                            changeForeColor(t2, index);
+                            garageSize[index] = 6;
                         }
-                        int size = Int32.Parse(garageSize[index].ToString());
+                        else if (Int16.Parse(garageSize[index].ToString()) == 6)
+                        {
+                            garageSize[index] = 2;
+                        }
+                        else
+                        {
+                            garageSize[index] = (Int32.Parse(garageSize[index].ToString()) + 1).ToString();
+                            //changeForeColor(t, index);
+                            if (t2 != null)
+                            {
+                                changeForeColor(t2, index);
+                            }
+                            int size = Int32.Parse(garageSize[index].ToString());
+                        }
+                        changeForeColor(t, index);
                     }
                 }
             }
-            else
+            else if((sender.GetType() == typeof(System.Windows.Forms.Button)))
             {
                 for(int i = 0; i < garageSize.Count; ++i)
                 {
@@ -200,7 +250,7 @@ namespace ets2_saveeditor
                     
                 }
 
-                this.Invoke(new Action(() => { MessageBox.Show("Unlocked all Garages"); }));
+                this.Invoke(new Action(() => { MessageBox.Show("Unlocked all Garages", "Unlocked all Garages", MessageBoxButtons.OK, MessageBoxIcon.Information); }));
                 treeView1.SelectedNode = treeView1.Nodes[1];
                 int ii = 0;
                 foreach(TreeNode n in treeView1.Nodes[1].Nodes)
@@ -278,7 +328,15 @@ namespace ets2_saveeditor
 
         private void reportProgress()
         {
-            progressBar1.Value += progress;
+            try
+            {
+                progressBar1.Value += progress;
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Progress Out Of Bounds");
+            }
+
             progress = 0;
 
             if (!thread.IsAlive)
@@ -286,7 +344,7 @@ namespace ets2_saveeditor
                 progressBarUpdateTimer.Stop();
                 this.progressBar1.Visible = false;
                 this.button2.Visible = true;
-                MessageBox.Show("Saved savegame modifications");
+                MessageBox.Show("Saved savegame modifications", "Saving completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -302,7 +360,8 @@ namespace ets2_saveeditor
             }
             catch(Exception exception)
             {
-                this.Invoke(new Action(() => { MessageBox.Show("Unexpected exception occured: " + exception.ToString()); }));
+                Console.WriteLine("Exc4");
+                this.Invoke(new Action(() => { MessageBox.Show("Unexpected exception occured: " + exception.ToString(), "Unexpected exception", MessageBoxButtons.OK, MessageBoxIcon.Stop); }));
             }
         }
 
@@ -315,13 +374,27 @@ namespace ets2_saveeditor
         {
             if(textBox1.Text.Contains(".sii"))
             {
-                string firstLine = File.ReadLines(textBox1.Text).First(); // check if ScsC header is set
+                string firstLine = "";
+                try
+                {
+                    firstLine = File.ReadLines(textBox1.Text).First(); // check if ScsC header is set
+                }
+                catch (InvalidOperationException)
+                {
+                    this.Invoke(new Action(() =>
+                        {
+                            MessageBox.Show("The file you are opening does not contain any content or might be corrupted!", "Invalid File Content", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        })
+                    );
+                    return true;
+                }
+
                 if (!Regex.IsMatch(firstLine, "ScsC"))
                 {
                     return false;
                 }
-                MessageBox.Show("File is not decrypted, please decrypt it using the Savegame-Decrypter", "Input Filestream Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                MessageBox.Show("File is not decrypted, please decrypt it using the Savegame-Decrypter", "Input Filestream Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //Application.Exit();
                 return true;
             }
@@ -340,6 +413,9 @@ namespace ets2_saveeditor
                 if (lines[i].Contains("hq_city"))
                 {
                     upperLimit = i;
+                    hq_city = lines[i].Replace("hq_city:", "");
+                    hq_city = hq_city.Replace(" ", "");
+                    Console.WriteLine("hq_upper: " + hq_city + " :");
                     return;
                 }
             }
@@ -365,7 +441,7 @@ namespace ets2_saveeditor
             }
             catch(IOException)
             {
-                MessageBox.Show("Can't create backup file. File does already exist");
+                MessageBox.Show("Can't create backup file. File does already exist", "File does already exist!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -380,7 +456,7 @@ namespace ets2_saveeditor
                 case "0":
                     n.ForeColor = Color.DarkRed;
                     break;
-                case "1":
+                case "6":
                     n.ForeColor = Color.Red;
                     break;
                 case "2":
@@ -411,19 +487,176 @@ namespace ets2_saveeditor
         * author: https://github.com/RayRay5
         */
 
-        private void doBackgroundStuff(string[] lines)
+        private void doBackgroundStuff(string[] lines, Boolean[] ignore_lines)
         {
             string[] savelines = lines;
             string content = "";
-            for (int j = 0; j < lines.Length; ++j)
+
+            int useCPU_Count = saveEditor.CPU_Count - 2;
+            //int useCPU_Count = 2;
+            string[] contents = new string[useCPU_Count + 1];
+            Thread[] stringThreads = new Thread[useCPU_Count];
+
+            /*for (int cpu_counting = 0; cpu_counting < useCPU_Count; ++cpu_counting)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    //MessageBox.Show("cpu_counting: " + cpu_counting + Environment.NewLine + "count: " + useCPU_Count);
+                }));
+
+                if(cpu_counting == useCPU_Count)
+                {
+                    MessageBox.Show("Gleich");
+                }
+
+                try
+                {
+                    ziel = ((lines.Length / useCPU_Count) * (cpu_counting + 1)) - 1;
+                    start = (lines.Length / useCPU_Count) * cpu_counting;
+                }
+                catch(DivideByZeroException)
+                {
+                    start = 0;
+                }
+
+                //Console.WriteLine("Start: " + start + Environment.NewLine + "Ziel: " + ziel);
+
+                stringThreads[cpu_counting] = new Thread(() =>
+                {
+                    for (int j = start; j < ziel; ++j) // TODO
+                    {
+                        //File.WriteAllText(ofd.FileName, (lines[i] + Environment.NewLine));
+                        if (ignore_lines[j] == false)
+                        {
+                            try
+                            {
+                                contents[cpu_counting] += savelines[j] + Environment.NewLine;
+                                //string cont = contents[cpu_counting];
+                            }
+                            catch(IndexOutOfRangeException range)
+                            {
+                                //Console.WriteLine(range.ToString());
+                                Console.WriteLine("cpu_counting: " + cpu_counting);
+                                this.Invoke(new Action(() =>
+                                {
+                                    MessageBox.Show("cpu_counting: " + cpu_counting + Environment.NewLine + "count: " + useCPU_Count + Environment.NewLine + "contents length: " + contents.Length
+                                        + Environment.NewLine + "savelines: " + savelines.Length + Environment.NewLine + "");
+                                }));
+                            }
+                        }
+
+                        //++progress;
+                    }
+                });
+                stringThreads[cpu_counting].Start();
+                stringThreads[cpu_counting].Name = "WriteBackThread " + cpu_counting.ToString();
+            }
+
+            for(int i = 0; i < stringThreads.Length; ++i)
+            {
+                Console.WriteLine("thread ended: " + i);
+                stringThreads[i].Join();
+            }
+
+            for (int i = 0; i < stringThreads.Length; ++i)
+            {
+                content = contents[i].ToString();
+            }*/
+
+            string content1 = "";
+            string content2 = "";
+            string content3 = "";
+            string content4 = "";
+
+            //int lines_per_thread = lines.Length / useCPU_Count;
+
+            // TODO Anfang optimieren
+            Thread stringThread1 = new Thread(() => 
+            {
+                for (int j = 0; j < lines.Length / 4; ++j)
+                {
+                    //File.WriteAllText(ofd.FileName, (lines[i] + Environment.NewLine));
+                    if (ignore_lines[j] == false)
+                    {
+                        content1 += savelines[j] + Environment.NewLine;
+                    }
+
+                    ++progress;
+                }
+            });
+            stringThread1.Start();
+
+            Thread stringThread2 = new Thread(() =>
+            {
+                for (int j = ((lines.Length / 4) * 1); j < ((lines.Length / 4) * 2); ++j)
+                {
+                    //File.WriteAllText(ofd.FileName, (lines[i] + Environment.NewLine));
+                    if (ignore_lines[j] == false)
+                    {
+                        content2 += savelines[j] + Environment.NewLine;
+                    }
+
+                    ++progress;
+                }
+            });
+            stringThread2.Start();
+
+            Thread stringThread3 = new Thread(() =>
+            {
+                for (int j = ((lines.Length / 4) * 2); j < ((lines.Length / 4) * 3); ++j)
+                {
+                    //File.WriteAllText(ofd.FileName, (lines[i] + Environment.NewLine));
+                    if (ignore_lines[j] == false)
+                    {
+                        content3 += savelines[j] + Environment.NewLine;
+                    }
+
+                    ++progress;
+                }
+            });
+            stringThread3.Start();
+
+            Thread stringThread4 = new Thread(() =>
+            {
+                for (int j = ((lines.Length / 4) * 3); j < lines.Length; ++j)
+                {
+                    //File.WriteAllText(ofd.FileName, (lines[i] + Environment.NewLine));
+                    if (ignore_lines[j] == false)
+                    {
+                        content4 += savelines[j] + Environment.NewLine;
+                    }
+
+                    ++progress;
+                }
+            });
+            stringThread4.Start();
+
+            stringThread1.Join();
+            stringThread2.Join();
+            stringThread3.Join();
+            stringThread4.Join();
+
+            content = content1 + content2 + content3 + content4;
+
+            // Anfang Original WriteBack Code
+            /*for (int j = 0; j < lines.Length; ++j)
             {
                 //File.WriteAllText(ofd.FileName, (lines[i] + Environment.NewLine));
-                content += savelines[j] + Environment.NewLine;
-                progress++;
-            }
-            File.WriteAllText(ofd.FileName, content);
-            progress++;
+                if (ignore_lines[j] == false)
+                {
+                    content += savelines[j] + Environment.NewLine;
+                }
 
+                ++progress;
+            }*/
+            // Ende Original Writeback Code
+
+            File.WriteAllText(ofd.FileName, content);
+            ++progress;
+
+            // TODO Ende
+
+            //Console.WriteLine("write b");
             toggleContextMenu(true);
 
             this.Invoke(new Action(() =>
@@ -431,7 +664,7 @@ namespace ets2_saveeditor
                 this.button1.Enabled = true;
                 this.button2.Enabled = true;
                 this.button3.Enabled = true;
-                this.button4.Enabled = false;// true;
+                this.button4.Enabled = true;// false; hier wird gerade dran gearbeitet
                 this.button5.Enabled = true;
                 this.button6.Enabled = true;
                 this.button8.Enabled = true;
@@ -449,6 +682,8 @@ namespace ets2_saveeditor
                 this.textBox4.Enabled = true;
                 Cursor.Current = Cursors.Default;
             }));
+
+            visitedCitiesBeforeAnalyzation = visitedCities.Count;
         }
 
         /**
@@ -486,6 +721,7 @@ namespace ets2_saveeditor
                         }
                         catch (Exception)
                         {
+                            //Console.WriteLine("Exc1");
                             //Console.WriteLine("exception at: " + child.Text);
                         }
                     }
@@ -502,6 +738,7 @@ namespace ets2_saveeditor
                         }
                         catch (Exception)
                         {
+                            Console.WriteLine("Exc2");
                             //Console.WriteLine("exception at: " + child.Text);
                         }
                     }
@@ -582,7 +819,10 @@ namespace ets2_saveeditor
 
             /*
             * write back garage data
+            * TODO
             */
+            ignore_lines = new bool[lines.Length];
+
             for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].Contains("garage") && !lines[i].Contains("garages") && (!(lines[i+1].Contains("}")) || !(lines[i+1].Contains("garage"))))
@@ -593,16 +833,242 @@ namespace ets2_saveeditor
                     if(ort.Length < 15)
                     {
                         int ind = garages.IndexOf(ort);
-                        do
-                        {
-                            i++;
-                        }
-                        while (!lines[i].Contains("status"));
-
+                        // Baustelle Anfang
+                        //TODO vehicles und drivers hinzufügen
                         if (ind > -1)
                         {
+                            do
+                            {
+                                ++i;
+                            }
+                            while (!lines[i].Contains("vehicles:"));
+                        
+                            //int arrayLooper = 0;
+                            int totalSlots = garages.Count * 5;
+                            string[] insert = new string[totalSlots];
+
+                            for(int j = 0; j < allTrucks.Count; ++j)
+                            {
+                                //allTrucks[i] = allTrucks[i].ToString().Replace(" trucks[0]: ", "");
+                                allTrucks[j] = Regex.Replace(allTrucks[j].ToString(), " trucks\\[[0-9]*\\]: ", "");
+                                //Regex.IsMatch(lines[i], "driver_readiness_timer\\[[0-9]*\\]")
+                                //Regex.Replace(lines[i], "garage : garage.", "");
+                            }
+
+                            switch (UInt16.Parse(garageSize[ind].ToString()))
+                            {
+                                case (UInt16) GarageSize.NULL:
+                                    lines[i] = " vehicles: 0";
+                                    break;
+                                case 1:
+                                    //lines[i] = " vehicles: 1\r\n vehicles[0]: null";
+                                    break;
+                                case (UInt16) GarageSize.SMALL:
+                                    for (int arrayLooper = 0; arrayLooper < (UInt16)GarageSlots.SMALL; ++arrayLooper)
+                                    {
+                                        if (arrayCounter >= allTrucks.Count)
+                                        {
+                                            insert[arrayCounter] = "null";
+                                            //Console.WriteLine("nuller");
+                                        }
+                                        else
+                                        {
+                                            insert[arrayCounter] = allTrucks[arrayCounter].ToString();
+                                        }
+
+                                        /*Console.WriteLine("arrayCounter: " + arrayCounter);
+                                        Console.WriteLine(insert[arrayCounter].ToString());*/
+                                        ++arrayCounter;
+                                    }
+                                    lines[i] = " vehicles: 3\r\n vehicles[0]: " + insert[arrayCounter - 3] + "\r\n vehicles[1]: " + insert[arrayCounter - 2] + "\r\n vehicles[2]: " + insert[arrayCounter - 1] + "";
+                                    break;
+                                case (UInt16) GarageSize.BIG:
+                                    for (int arrayLooper = 0; arrayLooper < (UInt16)GarageSlots.BIG; ++arrayLooper)
+                                    {
+                                        if (arrayCounter >= allTrucks.Count)
+                                        {
+                                            insert[arrayCounter] = "null";
+                                            //Console.WriteLine("nuller");
+                                        }
+                                        else
+                                        {
+                                            insert[arrayCounter] = allTrucks[arrayCounter].ToString();
+                                        }
+
+                                        /*Console.WriteLine("arrayCounter: " + arrayCounter);
+                                        Console.WriteLine(insert[arrayCounter].ToString());*/
+                                        ++arrayCounter;
+                                    }
+                                    lines[i] = " vehicles: 5\r\n vehicles[0]: " + insert[arrayCounter - 5] + "\r\n vehicles[1]: " + insert[arrayCounter - 4] + "\r\n vehicles[2]: " + insert[arrayCounter - 3] + "\r\n vehicles[3]: " + insert[arrayCounter - 2] + "\r\n vehicles[4]: " + insert[arrayCounter - 1] + "";
+                                    break;
+                                case 4:
+                                    //lines[i] = " vehicles: 1\r\n vehicles[0]: null";
+                                    break;
+                                case 5:
+                                    //lines[i] = " vehicles: 3\r\n vehicles[0]: null\r\n vehicles[1]: null\r\n vehicles[2]: null";
+                                    break;
+                                case (UInt16) GarageSize.TINY:
+                                    for (int arrayLooper = 0; arrayLooper < (UInt16)GarageSlots.TINY; ++arrayLooper)
+                                    {
+                                        if (arrayCounter >= allTrucks.Count)
+                                        {
+                                            insert[arrayCounter] = "null";
+                                            //Console.WriteLine("nuller");
+                                        }
+                                        else
+                                        {
+                                            insert[arrayCounter] = allTrucks[arrayCounter].ToString();
+                                        }
+
+                                        /*Console.WriteLine("arrayCounter: " + arrayCounter);
+                                        Console.WriteLine(insert[arrayCounter].ToString());*/
+                                        ++arrayCounter;
+                                    }
+                                    lines[i] = " vehicles: 1\r\n vehicles[0]: " + insert[arrayCounter - 1] + "";
+                                    break;
+                                default:
+                                    break;
+                            }                            
+
+                            do
+                            {
+                                ++i;
+                                if(lines[i].Contains("vehicles["))
+                                {
+                                    //lines[i] = "";
+                                    ignore_lines[i] = true;
+                                }
+                            }
+                            while (!lines[i].Contains("drivers:"));
+
+                            totalSlots = garages.Count * 5;
+                            insert = new string[totalSlots];
+
+                            for (int j = 0; j < allDrivers.Count; ++j)
+                            {
+                                //allTrucks[i] = allTrucks[i].ToString().Replace(" trucks[0]: ", "");
+                                allDrivers[j] = Regex.Replace(allDrivers[j].ToString(), " drivers\\[[0-9]*\\]: ", "");
+                                //Regex.IsMatch(lines[i], "driver_readiness_timer\\[[0-9]*\\]")
+                                //Regex.Replace(lines[i], "garage : garage.", "");
+                            }
+
+                            switch (UInt16.Parse(garageSize[ind].ToString()))
+                            {
+                                case (UInt16)GarageSize.NULL:
+                                    lines[i] = " drivers: 0";
+                                    break;
+                                case 1:
+                                    //lines[i] = " vehicles: 1\r\n vehicles[0]: null";
+                                    break;
+                                case (UInt16)GarageSize.SMALL:
+                                    for (int arrayLooper = 0; arrayLooper < (UInt16)GarageSlots.SMALL; ++arrayLooper)
+                                    {
+                                        if (driverArrayCounter >= allDrivers.Count)
+                                        {
+                                            insert[driverArrayCounter] = "null";
+                                            //Console.WriteLine("nuller");
+                                        }
+                                        else
+                                        {
+                                            insert[driverArrayCounter] = allDrivers[driverArrayCounter].ToString();
+                                        }
+
+                                        /*Console.WriteLine("arrayCounter: " + arrayCounter);
+                                        Console.WriteLine(insert[arrayCounter].ToString());*/
+                                        ++driverArrayCounter;
+                                    }
+
+                                    lines[i] = " drivers: 3\r\n";
+                                    if (hq_city == garages[ind].ToString())  // TODO
+                                    {
+                                        lines[i] += " drivers[0]: " + allDrivers[0];
+                                        Console.WriteLine("hq insert: " + allDrivers[0]);
+                                    }
+                                    else
+                                    {
+                                        lines[i] += " drivers[0]: " + insert[driverArrayCounter - 3];
+
+                                    }
+                                    lines[i] += "\r\n drivers[1]: " + insert[driverArrayCounter - 2] + "\r\n drivers[2]: " + insert[driverArrayCounter - 1] + "";
+
+                                    break;
+                                case (UInt16)GarageSize.BIG:
+                                    for (int arrayLooper = 0; arrayLooper < (UInt16)GarageSlots.BIG; ++arrayLooper)
+                                    {
+                                        if (driverArrayCounter >= allDrivers.Count)
+                                        {
+                                            insert[driverArrayCounter] = "null";
+                                        }
+                                        else
+                                        {
+                                            insert[driverArrayCounter] = allDrivers[driverArrayCounter].ToString();
+                                        }
+                                        ++driverArrayCounter;
+                                    }
+
+                                    lines[i] = " drivers: 5\r\n";
+
+                                    if (hq_city == garages[ind].ToString())  // TODO
+                                    {
+                                        lines[i] += " drivers[0]: " + allDrivers[0];
+                                    }
+                                    else
+                                    {
+                                        lines[i] += " drivers[0]: " + insert[driverArrayCounter - 5];
+                                    }
+                                    lines[i] += "\r\n drivers[1]: " + insert[driverArrayCounter - 4] + "\r\n drivers[2]: " + insert[driverArrayCounter - 3] + "\r\n drivers[3]: " + insert[driverArrayCounter - 2] + "\r\n drivers[4]: " + insert[driverArrayCounter - 1] + "";
+
+                                    break;
+                                case 4:
+                                    //lines[i] = " vehicles: 1\r\n vehicles[0]: null";
+                                    break;
+                                case 5:
+                                    //lines[i] = " vehicles: 3\r\n vehicles[0]: null\r\n vehicles[1]: null\r\n vehicles[2]: null";
+                                    break;
+                                case (UInt16)GarageSize.TINY:
+                                    for (int arrayLooper = 0; arrayLooper < (UInt16)GarageSlots.TINY; ++arrayLooper)
+                                    {
+                                        if (driverArrayCounter >= allDrivers.Count)
+                                        {
+                                            insert[driverArrayCounter] = "null";
+                                            //Console.WriteLine("nuller");
+                                        }
+                                        else
+                                        {
+                                            insert[driverArrayCounter] = allDrivers[driverArrayCounter].ToString();
+                                        }
+                                        ++driverArrayCounter;
+                                    }
+
+                                    if (hq_city == garages[ind].ToString())  // TODO
+                                    {
+                                        lines[i] = " drivers: 1\r\n drivers[0]: " + allDrivers[0] + "";
+                                    }
+                                    else
+                                    {
+                                        lines[i] = " drivers: 1\r\n drivers[0]: " + insert[driverArrayCounter - 1] + "";
+                                    }
+
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            do
+                            {
+                                ++i;
+                                if (lines[i].Contains("drivers["))
+                                {
+                                    //lines[i] = "";
+                                    ignore_lines[i] = true;
+                                }
+                            }
+                            while (!lines[i].Contains("status"));
+
                             lines[i] = " status: " + garageSize[ind];
                         }
+
+                        // Baustelle Ende
 
                         //string size = Regex.Replace(lines[i], " status: ", "");
                         //garageSize.Add(size);
@@ -630,7 +1096,14 @@ namespace ets2_saveeditor
                         }
                     }
 
-                    lines[i + visitedCitiesBeforeAnalyzation] = lines[i + visitedCitiesBeforeAnalyzation] + Environment.NewLine + stuff;
+                    if (stuff != "")
+                    {
+                        lines[i + visitedCitiesBeforeAnalyzation] = lines[i + visitedCitiesBeforeAnalyzation] + Environment.NewLine + stuff;
+                    }
+                    else
+                    {
+                        lines[i + visitedCitiesBeforeAnalyzation] = lines[i + visitedCitiesBeforeAnalyzation];
+                    }
                     break;
                 }
             }
@@ -651,7 +1124,14 @@ namespace ets2_saveeditor
                         }
                     }
 
-                    lines[i + visitedCitiesBeforeAnalyzation] = lines[i + visitedCitiesBeforeAnalyzation] + Environment.NewLine + stuff;
+                    if (stuff != "")
+                    {
+                        lines[i + visitedCitiesBeforeAnalyzation] = lines[i + visitedCitiesBeforeAnalyzation] + Environment.NewLine + stuff;
+                    }
+                    else
+                    {
+                        lines[i + visitedCitiesBeforeAnalyzation] = lines[i + visitedCitiesBeforeAnalyzation];
+                    }
                     break;
                 }
             }
@@ -665,36 +1145,66 @@ namespace ets2_saveeditor
                         lines[i] = " experience_points: " + textBox3.Text;
                     }
                     
-                    i++;
+                    if(UInt16.Parse(comboBox1.Text) > 63 || UInt16.Parse(comboBox1.Text) < 0)
+                    {
+                        comboBox1.Text = "0";
+                    }
+
+                    if (UInt16.Parse(comboBox2.Text) > 6 || UInt16.Parse(comboBox2.Text) < 0)
+                    {
+                        comboBox2.Text = "0";
+                    }
+
+                    if (UInt16.Parse(comboBox3.Text) > 6 || UInt16.Parse(comboBox3.Text) < 0)
+                    {
+                        comboBox3.Text = "0";
+                    }
+
+                    if (UInt16.Parse(comboBox4.Text) > 6 || UInt16.Parse(comboBox4.Text) < 0)
+                    {
+                        comboBox4.Text = "0";
+                    }
+
+                    if (UInt16.Parse(comboBox5.Text) > 6 || UInt16.Parse(comboBox5.Text) < 0)
+                    {
+                        comboBox5.Text = "0";
+                    }
+
+                    if (UInt16.Parse(comboBox6.Text) > 6 || UInt16.Parse(comboBox6.Text) < 0)
+                    {
+                        comboBox6.Text = "0";
+                    }
+
+                    ++i;
                     if (comboBox1.Text != "" && comboBox1.Text != "don't change")
                     {
                         lines[i] = " adr: " + comboBox1.Text;
                     }
-                    i++;
+                    ++i;
 
                     if(comboBox2.Text != "" && comboBox2.Text != "don't change")
                     {
                         lines[i] = " long_dist: " + comboBox2.Text;
-                    }                    
-                    i++;
+                    }
+                    ++i;
 
                     if (comboBox3.Text != "" && comboBox3.Text != "don't change")
                     {
                         lines[i] = " heavy: " + comboBox3.Text;
                     }
-                    i++;
+                    ++i;
 
                     if (comboBox4.Text != "" && comboBox4.Text != "don't change")
                     {
                         lines[i] = " fragile: " + comboBox4.Text;
                     }
-                    i++;
+                    ++i;
 
                     if (comboBox5.Text != "" && comboBox5.Text != "don't change")
                     {
                         lines[i] = " urgent: " + comboBox5.Text;
                     }
-                    i++;
+                    ++i;
 
                     if (comboBox6.Text != "" && comboBox6.Text != "don't change")
                     {
@@ -702,18 +1212,35 @@ namespace ets2_saveeditor
                     }
 
                     //File.WriteAllLines(ofd.FileName, lines);
-                    
-                    
                     //Cursor.Current = Cursors.Default;
-                    
                     break;
                 }
             }
 
-            thread = new Thread(() => doBackgroundStuff(lines));
+            /*string[] lines1 = new string[lines.Length / 2];
+            string[] lines2 = new string[lines.Length / 2 + lines.Length % 2];
+
+            bool[] iglines1 = new bool[ignore_lines.Length / 2];
+            bool[] iglines2 = new bool[ignore_lines.Length / 2 + ignore_lines.Length % 2];
+
+            Array.Copy(lines, 0, lines1, 0, (lines.Length / 2));
+            Array.Copy(lines, (lines.Length / 2), lines2, 0, ((lines.Length / 2) + (lines.Length % 2)));*/
+
+            thread = new Thread(() => doBackgroundStuff(lines, ignore_lines));
+            thread.SetApartmentState(ApartmentState.MTA);
             thread.Start();
+            thread.Name = "DoBackgroundStuffThread";
+            /*thread1 = new Thread(() => doBackgroundStuff(lines1, iglines1));
+            thread1.SetApartmentState(ApartmentState.MTA);
+            thread1.Start();
+            thread1.Name = "DoBackgroundStuffThread";
+            thread2 = new Thread(() => doBackgroundStuff(lines2, iglines2));
+            thread2.SetApartmentState(ApartmentState.MTA);
+            thread2.Start();
+            thread2.Name = "DoBackgroundStuffThread";*/
             Thread info = new Thread(() => backgroundCallBack());
             info.Start();
+            info.Name = "InfoStuffThread";
 
             createProgressTimer();
         }
@@ -723,7 +1250,7 @@ namespace ets2_saveeditor
             //progressBarUpdateTimer.Start();
             progressBarUpdateTimer = new System.Timers.Timer();
             progressBarUpdateTimer.Enabled = true;
-            progressBarUpdateTimer.Elapsed += new ElapsedEventHandler(progressBarUpdateTimer_Elapsed);
+            progressBarUpdateTimer.Elapsed += new ElapsedEventHandler(progressBarUpdateTimer_Elapsed); //TODO fix
             progressBarUpdateTimer.Interval = 1000;
             progressBarUpdateTimer.Start();
             //thread.Join();
@@ -739,8 +1266,8 @@ namespace ets2_saveeditor
         }
 
         /**
-        *
-        *
+        * Resets all data to the initial state
+        * author: https://github.com/RayRay5
         */
         private void resetData()
         {
@@ -756,7 +1283,8 @@ namespace ets2_saveeditor
             }
             catch (Exception)
             {
-                MessageBox.Show("some error");
+                Console.WriteLine("Exc1");
+                MessageBox.Show("Please report this data to the developer. Error code is EXC1", "Error resetting data", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             textBox2.Text = "(empty)";
@@ -801,6 +1329,7 @@ namespace ets2_saveeditor
             /*
             * read bank account money
             */
+
             for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].Contains("money_account"))
@@ -809,6 +1338,95 @@ namespace ets2_saveeditor
                     break;
                 }
             }
+
+            /*
+             * Read all known drivers of the players company
+             */
+
+            for (int i = 0; i < lines.Length; ++i)
+            {
+                if (Regex.IsMatch(lines[i], "driver_readiness_timer\\[[0-9]*\\]"))
+                {
+                    do
+                    {
+                        --i;
+                        if(lines[i].Contains("drivers:"))
+                        {
+                            ++i;
+                            do
+                            {
+                                allDrivers.Add(lines[i]);
+                                ++i;
+                            }
+                            while (!lines[i].Contains("driver_readiness_timer"));
+
+                            break;
+                        }
+                    }
+                    while (!lines[i].Contains("hq_city"));
+
+                    break;
+                }
+            }
+
+            /*
+             * Read all known trucks of the players company
+             */
+
+            for (int i = 0; i < lines.Length; ++i)
+            {
+                if (Regex.IsMatch(lines[i], "driver_readiness_timer\\[[0-9]*\\]"))
+                {
+                    do
+                    {
+                        --i;
+                        // Erwartet, dass dir Arrays der Trucks und der Logs direkt hintereinander stehen
+                        if (lines[i].Contains("trucks:"))
+                        {
+                            ++i;
+                            
+                            while (!lines[i].Contains("profit"))
+                            {
+                                allTrucks.Add(lines[i]);
+                                ++i;
+                            }
+
+                            ++i;
+                            while (!lines[i].Contains("drivers"))
+                            {
+                                allProfitLogs.Add(lines[i]);
+                                ++i;
+                            }
+
+                            break;
+                        }
+                    }
+                    while (!lines[i].Contains("hq_city"));
+
+                    break;
+                }
+            }
+
+            Console.WriteLine("-------------------");
+            foreach (string s in allDrivers)
+            {
+                Console.WriteLine(s);
+            }
+
+            Console.WriteLine("-------------------");
+
+            foreach (string s in allTrucks)
+            {
+                Console.WriteLine(s);
+            }
+
+            Console.WriteLine("-------------------");
+
+            foreach (string s in allProfitLogs)
+            {
+                Console.WriteLine(s);
+            }
+            Console.WriteLine("-------------------");
 
             /*
             * read visited cities
@@ -942,24 +1560,123 @@ namespace ets2_saveeditor
             {
                 if (lines[i].Contains("experience_points"))
                 {
+                    /*if (UInt16.Parse(comboBox1.Text) > 6 || UInt16.Parse(comboBox1.Text) < 0)
+                    {
+                        comboBox1.SelectedIndex = 1;
+                    }
+
+                    if (UInt16.Parse(comboBox2.Text) > 6 || UInt16.Parse(comboBox2.Text) < 0)
+                    {
+                        comboBox2.SelectedIndex = 1;
+                    }
+
+                    if (UInt16.Parse(comboBox3.Text) > 6 || UInt16.Parse(comboBox3.Text) < 0)
+                    {
+                        comboBox3.SelectedIndex = 1;
+                    }
+
+                    if (UInt16.Parse(comboBox4.Text) > 6 || UInt16.Parse(comboBox4.Text) < 0)
+                    {
+                        comboBox4.SelectedIndex = 1;
+                    }
+
+                    if (UInt16.Parse(comboBox5.Text) > 6 || UInt16.Parse(comboBox5.Text) < 0)
+                    {
+                        comboBox5.SelectedIndex = 1;
+                    }
+
+                    if (UInt16.Parse(comboBox6.Text) > 6 || UInt16.Parse(comboBox6.Text) < 0)
+                    {
+                        comboBox6.SelectedIndex = 1;
+                    }*/
+
+                    comboBox1.SelectedIndex = 1;
+                    comboBox2.SelectedIndex = 1;
+                    comboBox3.SelectedIndex = 1;
+                    comboBox4.SelectedIndex = 1;
+                    comboBox5.SelectedIndex = 1;
+                    comboBox6.SelectedIndex = 1;
+
                     textBox3.Text = regexReplaceNonNumericChars(lines[i]);
-                    i++;
-                    comboBox1.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
-                    i++;
-                    comboBox2.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
-                    i++;
-                    comboBox3.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
-                    i++;
-                    comboBox4.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
-                    i++;
-                    comboBox5.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
-                    i++;
-                    comboBox6.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
+                    ++i;
+                    try
+                    {
+                        comboBox1.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
+                        ++i;
+                    }
+                    catch(Exception)
+                    {
+
+                    }
+
+                    try
+                    {
+                        comboBox2.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
+                        ++i;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    try
+                    {
+                        comboBox3.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
+                        ++i;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    try
+                    {
+                        comboBox4.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
+                        ++i;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    try
+                    {
+                        //Console.WriteLine("index: " + comboBox5.SelectedIndex);
+                        comboBox5.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
+                        ++i;
+                    }
+                    catch (Exception)
+                    {
+                        //Console.WriteLine("index: " + comboBox5.SelectedIndex);
+                        Console.WriteLine("invlaid value found");
+                    }
+
+                    try
+                    {
+                        comboBox6.SelectedIndex = Int32.Parse(regexReplaceNonNumericChars(lines[i])) + 1;
+                    }
+                    catch (Exception)
+                    {
+
+                    }                    
                     break;
                 }
             }
 
-            button4.Enabled = false;  // true; // enable job dispatcher
+            //lines[upperLimit] = " hq_city: " + treeView1.Nodes[1].Nodes[0].Text;
+            lines[upperLimit] = " hq_city: " + hq_city;
+            //Console.WriteLine(treeView1.Nodes[1].Nodes[0].ToString());
+
+            if (saveEditor.dev == true)
+            {
+                button4.Enabled = true;  // false; // enable job dispatcher
+            }
+            else
+            {
+                button4.Enabled = false;
+            }
+
+            button2.Enabled = true;
             button5.Enabled = true; // enable unlock buttons
             button6.Enabled = true; // enable unlock buttons
             Cursor.Current = Cursors.Default;
@@ -1030,7 +1747,7 @@ namespace ets2_saveeditor
 
                     File.WriteAllLines(ofd.FileName, lines);
                     Cursor.Current = Cursors.Default;
-                    MessageBox.Show("Saved savegame modifications");
+                    MessageBox.Show("Saved savegame modifications", "Saving completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -1084,25 +1801,25 @@ namespace ets2_saveeditor
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form newForm = new newForm();
-            newForm.Show();
+            Form jobEditor = new jobEditor();
+            jobEditor.Show();
         }
 
         private void licenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("GNU General Public License v3.0 from June 29th, 2007." + Environment.NewLine + Environment.NewLine +
                 "You can access the full text over here " + Environment.NewLine + 
-                "https://raw.githubusercontent.com/RayRay5/ets2_savegame_editor/master/LICENSE", "License");
+                "https://raw.githubusercontent.com/RayRay5/ets2_savegame_editor/master/LICENSE", "License", MessageBoxButtons.OK, MessageBoxIcon.None);
         }
 
         private void versionInfoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Version " + _versionNumber, "Installed Version");
+            MessageBox.Show("Version " + _versionNumber, "Installed Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("ETS2 Savegame Editor by https://github.com/RayRay5", "About");
+            MessageBox.Show("ETS2 Savegame Editor by https://github.com/RayRay5", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1113,12 +1830,12 @@ namespace ets2_saveeditor
         private void systemRequirementsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show(".NET Framework Version 4.6 or later" + Environment.NewLine + "No other special requirements"
-                + Environment.NewLine + "However a good CPU is recommended", "System Requirements");
+                + Environment.NewLine + "However a good CPU is recommended", "System Requirements", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void everyoneIWouldLikeToThankToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("TODO", "THANK YOU!");
+            MessageBox.Show("TODO", "THANK YOU!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void changelogToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1127,8 +1844,112 @@ namespace ets2_saveeditor
             //Process.Start(sInfo);
         }
 
+        private void changeLanguage()
+        {
+            this.button3.Text = Config.lang_terms[0];
+            this.label9.Text = Config.lang_terms[1];
+            this.button8.Text = Config.lang_terms[2];
+            this.button4.Text = Config.lang_terms[3];
+            this.button5.Text = Config.lang_terms[4];
+            this.button6.Text = Config.lang_terms[5];
+
+            this.menu1ToolStripMenuItem.Text = Config.lang_terms[6];
+            this.optimizeToolStripMenuItem.Text = Config.lang_terms[7];
+            this.exitToolStripMenuItem.Text = Config.lang_terms[8];
+
+            this.menu2ToolStripMenuItem.Text = Config.lang_terms[9];
+            this.helpWithToolStripMenuItem.Text = Config.lang_terms[10];
+            this.commonProblemsToolStripMenuItem.Text = Config.lang_terms[11];
+            this.licenseToolStripMenuItem.Text = Config.lang_terms[12];
+            this.versionInfoToolStripMenuItem.Text = Config.lang_terms[13];
+            this.changelogToolStripMenuItem.Text = Config.lang_terms[14];
+            this.aboutToolStripMenuItem.Text = Config.lang_terms[15];
+            this.systemRequirementsToolStripMenuItem.Text = Config.lang_terms[16];
+            this.everyoneIWouldLikeToThankToolStripMenuItem.Text = Config.lang_terms[17];
+
+            this.button1.Text = Config.lang_terms[18];
+            this.label7.Text = Config.lang_terms[19];
+            this.label8.Text = Config.lang_terms[20];
+            this.label2.Text = Config.lang_terms[21];
+            this.label3.Text = Config.lang_terms[22];
+            this.label4.Text = Config.lang_terms[23];
+            this.label5.Text = Config.lang_terms[24];
+            this.label6.Text = Config.lang_terms[25];
+            this.button2.Text = Config.lang_terms[26];
+            this.label1.Text = Config.lang_terms[27];
+
+            
+            
+        }
+
         private void button5_Click(object sender, EventArgs e)
         {
+            /*treeView1.Nodes.Clear();
+            treeView2.Nodes.Clear();
+            garages.Clear();
+            garageSize.Clear();
+            cities.Clear();
+            visitedCities.Clear();*/
+            /*
+             * filename = textBox1.Text;
+            lines = File.ReadAllLines(filename);
+
+             for (int i = 0; i < lines.Length; ++i)
+            {
+                if (Regex.IsMatch(lines[i], "garage.") && !(lines[i].Contains("garages")))
+                //if (lines[i].Contains("garage") && !lines[i].Contains("garages"))
+                {
+                    //MessageBox.Show(lines[i]);
+                    string addString = Regex.Replace(lines[i], "garage : garage.", "");
+                    addString = Regex.Replace(addString, " {", "");
+
+                    do
+                    {
+                        i++;
+                    }
+                    while (!lines[i].Contains("status"));
+
+                    string size = Regex.Replace(lines[i], " status: ", "");
+
+                    //addString += " (Size: " + size + ")";
+                    if (!addString.Contains("garage"))
+                    {
+                        garageSize.Add(size);
+                        garages.Add(addString);
+                    }
+
+                }
+            }
+            treeView1.Nodes[1].Text += "(Size: " + garages.Count.ToString() + ")";
+            //MessageBox.Show(garages.Count.ToString());
+
+            string output = "";
+            for (int i = 0; i < garages.Count; ++i)
+            {
+                output += garages[i] + ";";
+            }
+
+            for (int j = 0; j < garages.Count; ++j)
+            {
+                TreeNode n = new TreeNode();
+                n.Text = garages[j].ToString();
+
+                if (n.Text.Length > 25)
+                {
+                    otherStuff.Add(garages[j]);
+                    treeView1.Nodes[0].Nodes.Add(n);
+                }
+                else
+                {
+                    changeForeColor(n, j);
+                    treeView1.Nodes[1].Nodes.Add(n); //Nodes[1] falls es mehr Elemente im Treeview gibt
+                    n.ContextMenuStrip = upgradeGarages;
+                }
+            }
+
+            treeView1.Nodes[0].Text += "(Size: " + otherStuff.Count + ")";
+             * */
+
             treeView1.Nodes[1].Collapse();
             striplabel4_Click(sender, e);
         }
@@ -1163,7 +1984,7 @@ namespace ets2_saveeditor
             }
             treeView1.Nodes[3].Text = "Visited Cities(Size: " + treeView1.Nodes[3].Nodes.Count + ")";
             button6.Enabled = false;
-            this.Invoke(new Action(() => { MessageBox.Show("Unlocked all Cities"); }));
+            this.Invoke(new Action(() => { MessageBox.Show("Unlocked all Cities", "Unlocked all Cities", MessageBoxButtons.OK, MessageBoxIcon.Information); }));
         }
 
         private void removeEmptyLinesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1193,7 +2014,7 @@ namespace ets2_saveeditor
             this.button2.Visible = false;
             this.progressBar1.Visible = true;
 
-            thread = new Thread(() => doBackgroundStuff(writeBack));
+            thread = new Thread(() => doBackgroundStuff(writeBack, ignore_lines));
             thread.Start();
             Thread info = new Thread(() => backgroundCallBack());
             info.Start();
