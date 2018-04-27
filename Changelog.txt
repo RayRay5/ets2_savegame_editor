@@ -102,4 +102,30 @@ ADDED Support for other languages to be added
 	- English and German are already supported
 	- Standalone Application will be English only
 
+---------------------------------------------------------------------------------------
+
+RC10 around late April 2018
+
+---------------------------------------------------------------------------------------
+
+FORKs using older code may no longer be compatible with code in this version due to code changes "caused" by the new writeback method
+Several bug fixes
+ADDED
+	- more string into lang packs
+	- some tools to improve debugging, like an event logger. These functions need to be commented-in codewise during the debug session
+	- FAQ Section is now being read from file system, in a similar way as language files are being read.
+	- Some stuff that might be linked to stuff that is being coded in the future
+	
+FIXED
+	- GUI bugs, GUI is now properly resizeable
+	- some more bure bugs caused by code changes mentioned above
+
+---------------------------------------------------------------------------------------
+
+Final Release April, 27 2018
+
+---------------------------------------------------------------------------------------
+
+FORK Prepared Code for Code updates and Code removal to make the code more slim and readable
+
 =================================================================================================================================
