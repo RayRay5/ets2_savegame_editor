@@ -34,16 +34,16 @@ namespace saveeditor
             switch (property)
             {
                 case "Source":
-                    newForm.jobSource[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Source", this.textBox2.Text);
+                    jobEditor.jobSource[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Source", this.textBox2.Text);
                     break;
                 case "Cargo":
-                    newForm.cargo[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Cargo", this.textBox2.Text);
+                    jobEditor.cargo[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Cargo", this.textBox2.Text);
                     break;
                 case "Destination":
-                    newForm.jobDestination[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Destination", this.textBox2.Text);
+                    jobEditor.jobDestination[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Destination", this.textBox2.Text);
                     break;
                 case "Urgency":
                     string textboxString = textBox2.Text;
@@ -53,36 +53,36 @@ namespace saveeditor
                         MessageBox.Show("Invalid value for \"Urgency\" selected!");
                         return;
                     }
-                    newForm.urgency[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Urgency", this.textBox2.Text);
+                    jobEditor.urgency[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Urgency", this.textBox2.Text);
                     break;
                 case "Truck":
-                    newForm.truck[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Truck", this.textBox2.Text);
+                    jobEditor.truck[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Truck", this.textBox2.Text);
                     break;
                 case "Variant":
-                    newForm.variant[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Variant", this.textBox2.Text);
+                    jobEditor.variant[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Variant", this.textBox2.Text);
                     break;
                 case "Expiration Time":
-                    newForm.expiration[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Expiration Time", this.textBox2.Text);
+                    jobEditor.expiration[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Expiration Time", this.textBox2.Text);
                     break;
                 case "Shortest Distance":
-                    newForm.shortestDistance[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Shortest Distance", this.textBox2.Text);
+                    jobEditor.shortestDistance[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Shortest Distance", this.textBox2.Text);
                     break;
                 case "Ferry Time":
-                    newForm.ferryTime[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Ferry Time", this.textBox2.Text);
+                    jobEditor.ferryTime[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Ferry Time", this.textBox2.Text);
                     break;
                 case "Ferry Price":
-                    newForm.ferryPrice[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Ferry Price", this.textBox2.Text);
+                    jobEditor.ferryPrice[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Ferry Price", this.textBox2.Text);
                     break;
                 case "Trailer Place":
-                    newForm.trailerPlace[newForm.selectedItem] = textBox2.Text;
-                    newForm.updateTreeView(this.parent, newForm.selectedItem, "Trailer Place", this.textBox2.Text);
+                    jobEditor.trailerPlace[jobEditor.selectedItem] = textBox2.Text;
+                    jobEditor.updateTreeView(this.parent, jobEditor.selectedItem, "Trailer Place", this.textBox2.Text);
                     break;
                 default:
                     MessageBox.Show("Unknown Item. Applying changes failed!");

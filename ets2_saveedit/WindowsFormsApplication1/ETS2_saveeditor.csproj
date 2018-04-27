@@ -67,17 +67,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventLogger.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="editValue.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="editValue.Designer.cs">
       <DependentUpon>editValue.cs</DependentUpon>
     </Compile>
-    <Compile Include="newForm.cs">
+    <Compile Include="jobEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="newForm.Designer.cs">
-      <DependentUpon>newForm.cs</DependentUpon>
+    <Compile Include="jobEditor.Designer.cs">
+      <DependentUpon>jobEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="saveEditorMainForm.cs">
       <SubType>Form</SubType>
@@ -90,8 +92,8 @@
     <EmbeddedResource Include="editValue.resx">
       <DependentUpon>editValue.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="newForm.resx">
-      <DependentUpon>newForm.cs</DependentUpon>
+    <EmbeddedResource Include="jobEditor.resx">
+      <DependentUpon>jobEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="saveEditorMainForm.resx">
       <DependentUpon>saveEditorMainForm.cs</DependentUpon>
@@ -118,6 +120,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Changelog.txt" />
+    <Content Include="LICENSE.txt" />
+    <Content Include="TextFile1.txt" />
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
