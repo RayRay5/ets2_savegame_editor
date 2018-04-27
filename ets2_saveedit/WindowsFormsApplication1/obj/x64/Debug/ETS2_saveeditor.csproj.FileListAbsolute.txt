@@ -1,1 +1,0 @@
-C:\Users\Raphael\Documents\Visual Studio 2015\Projects\ets2_saveedit\WindowsFormsApplication1\bin\x64\Debug\ETS2_SaveEditor.exe.config
