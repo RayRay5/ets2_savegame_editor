@@ -5,7 +5,8 @@ Changes Version 2.0 Beta
 
 Everything changed. Except var. Var never changes.
 Datastructures and Data-handling changed from attribute-based handling to unit-based handling.
-The basic functions of the editor are now located in an .dll file that you can use for your own save-editing projects. (Documentation is missing, will be added later, when the final release of V2 is out)
+The basic functions of the editor are now located in an .dll file that you can use for your own save-editing projects.
+	(Documentation is missing, will be added later, when the final release of V2 is out)
 GUI is now a seperate program that utilizes the libary files (.dll)
 
 Development Changes:
