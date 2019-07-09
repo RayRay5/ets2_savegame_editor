@@ -1,4 +1,41 @@
 ﻿Changelog for ETS2 Savegame Editor
+ =================================================================================================================================
+Changes Version 2.0 Beta
+=================================================================================================================================
+
+Everything changed. Except var. Var never changes.
+Datastructures and Data-handling changed from attribute-based handling to unit-based handling.
+The basic functions of the editor are now located in an .dll file that you can use for your own save-editing projects. (Documentation is missing, will be added later, when the final release of V2 is out)
+GUI is now a seperate program that utilizes the libary files (.dll)
+
+Development Changes:
+ - Updated to .NET Framework v4.7.1 (as of now v4.7.2 is latest available .NET Framework release)
+ - Ported project files to Visual Studio 2019
+ - Program is more efficient in terms of CPU, but in exchange requires a few MB more RAM. (No changes in overall in comparison to v1.x)
+ - Tests were performed on Windows 10 (64 bit) 1809 and 1903/1905 always with latest public/stable updates installed
+ - Tested on Game versions 1.33.xs (final), 1.34.xs (beta and final) and 1.35.xs (beta)
+ 
+ General Changes:
+ - You have to select a backup path and a savepath for the savegames in order to edit the original savegame.
+ - Program now checks on startup if the required version for .NET Framework is installed
+ - When loading a savegame, the program now also checks if the file is decrypted and throws an error if not.
+
+Libary changes:
+ - Initial release.
+ - Loads of functions that handle the data. (Instead of two big functions as in v1.x)
+ - Support for some future features. (hint: the word has 8 letters)
+
+GUI (Main Program) changes:
+ - Initial release.
+ - Reworked GUI
+ - Streamlining of the GUI, also changed GUI element names.
+ - Added logging support: The program automatically creates a logfile in the directory that you are in (needs to be enabled by default in final release). Please provide this log file if you are reporting a crash.
+  - Disabled / Hid GUI elements related to features that are not implemented / ready yet.
+
+/!\/!\/!\ IMPORTANT
+Some features from the first versions (v1.x) are not working or implemented yet. Use Version 1 releases in this case.
+/!\/!\/!\
+
 
 =================================================================================================================================
 Changes Version 1.1 Beta
