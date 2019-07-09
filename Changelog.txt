@@ -12,7 +12,8 @@ GUI is now a seperate program that utilizes the libary files (.dll)
 Development Changes:
  - Updated to .NET Framework v4.7.1 (as of now v4.7.2 is latest available .NET Framework release)
  - Ported project files to Visual Studio 2019
- - Program is more efficient in terms of CPU, but in exchange requires a few MB more RAM. (No changes in overall in comparison to v1.x)
+ - Program is more efficient in terms of CPU, but in exchange requires a few MB more RAM.
+ 	(No changes in overall in comparison to v1.x)
  - Tests were performed on Windows 10 (64 bit) 1809 and 1903/1905 always with latest public/stable updates installed
  - Tested on Game versions 1.33.xs (final), 1.34.xs (beta and final) and 1.35.xs (beta)
  
@@ -30,7 +31,8 @@ GUI (Main Program) changes:
  - Initial release.
  - Reworked GUI
  - Streamlining of the GUI, also changed GUI element names.
- - Added logging support: The program automatically creates a logfile in the directory that you are in (needs to be enabled by default in final release). Please provide this log file if you are reporting a crash.
+ - Added logging support: The program automatically creates a logfile in the directory that you are in
+ 	(needs to be enabled by default in final release). Please provide this log file if you are reporting a crash.
   - Disabled / Hid GUI elements related to features that are not implemented / ready yet.
 
 /!\/!\/!\ IMPORTANT
