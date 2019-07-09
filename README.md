@@ -17,7 +17,7 @@ Click "Open File" to load the ETS2 savegame file
 Before you open a savegame file, make sure that it is decrypted.
 
 You can find the Savegame Decypter over here
-<link dead>
+**The original links are dead and I haven't found another good and reliable decrypter yet**
 **I am looking around for a solution that is serious and staable**
 
 You will be able to create a backup, just enter a filename or create/select it in the Explorer.
