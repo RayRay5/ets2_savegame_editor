@@ -18,6 +18,8 @@ Before you open a savegame file, make sure that it is decrypted.
 
 You can find the Savegame Decypter over here
 https://drive.google.com/file/d/0B0Ak3sK4ADk4QzlpMzcyd0V1MUE/view
+or
+https://www.dropbox.com/s/9h4596cwndv4rke/SII_Decrypt%5Bv1.4.1%5D.zip?dl=0 (WITH GUI)
 
 You will be able to create a backup, just enter a filename or create/select it in the Explorer.
 
