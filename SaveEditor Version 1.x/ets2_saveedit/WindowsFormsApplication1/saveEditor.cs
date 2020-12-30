@@ -8,17 +8,19 @@ using System.Windows.Forms;
 
 namespace ets2_saveeditor
 {
-    static class saveEditor
+    static class SaveEditor
     {
         static Config conf;
-        public static Config Conf { get => conf; set => conf = value; }
+        public static Config config { get => conf; set => conf = value; }
         public static bool dev = false;
         public static UInt16 CPU_Count = 1;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
+#pragma warning disable IDE1006 // Naming Styles
         static void Main(string[] args)
+#pragma warning restore IDE1006 // Naming Styles
         {
             if(args.Contains("dev"))
             {
@@ -45,7 +47,7 @@ namespace ets2_saveeditor
 
             if (File.Exists(@"config.txt"))
             {
-                string lang = "";
+                string lang = "en";
                 try
                 {
                     string[] configLines = File.ReadAllLines(@"config.txt");
@@ -58,7 +60,22 @@ namespace ets2_saveeditor
                         }
                     }
                     conf = new Config(lang);
-                    Console.WriteLine(conf.Lang);
+                    //Console.WriteLine(conf.Lang);
+
+                    if (!File.Exists(@"./lang/lang_" + conf.Lang + ".txt"))
+                    {
+                        MessageBox.Show("Could not find language (/lang_" + conf.Lang + ") folder", "File not found" ,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if(dev == true)
+                        {
+                            MessageBox.Show("Could not find language (/lang_" + conf.Lang + ") folder. Please check if the folder is also existant in your" +
+                                "development folder. \n" +
+                                "E.G.: The folder C:\\Users\\RayRay5\\source\\repos\\ets2_saveedit\\WindowsFormsApplication1\\bin\\x64\\Debug should exist \n" +
+                                "and if you use the English language, there should also be the file \n" +
+                                "C:\\Users\\RayRay5\\source\\repos\\ets2_saveedit\\WindowsFormsApplication1\\bin\\x64\\Debug\\lang_en.txt inside",
+                                "[DEV] File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        return;
+                    }
 
                     string[] langTerms = File.ReadAllLines(@"./lang/lang_" + conf.Lang + ".txt");
                     UInt16 counter = 0;
@@ -78,9 +95,10 @@ namespace ets2_saveeditor
                     
                     //Console.WriteLine(Config.lang_terms.ToString());
                 }
-                catch (Exception)
+                catch (IOException)
                 {
-                    Console.WriteLine("EXCC");
+                    //Console.WriteLine("EXCC");
+                    //MessageBox.Show("Could not Find lang folder ");
                 }
             }
 
